@@ -18,8 +18,8 @@ module Main where
                 validator     >>>   
                 sorter        >>> -}
                 bibTex2HTML   >>>   
-                html2Aterm    >>> -- easy
-                aTerm2String      --done
+                html2Aterm    >>>
+                aTerm2String
    
 
     aTerm2BibTex :: Component ATerm BibTex
@@ -44,25 +44,25 @@ module Main where
 
 
     buildbegin :: Reference -> [BlockElem]
-    buildbegin ref =  [A [(Field "href" ref)] ref
-                      ,P []                   "|"
+    buildbegin ref =  [ A [(Field "href" ref)] ref
+                      , P []                   "|"
                       ] 
 
     buildend :: EntryType -> Reference -> [Field] -> Tr
     buildend spec ref attr = Tr [(Field "valign" "top")] [A [(Field "name" ref)] ref, P [] (buildPara spec attr)]
 
     buildPara :: EntryType -> [Field] -> String
-    buildPara spec = foldr ((++) . cPAux) ""
+    buildPara spec = foldr ((++) . formatFields) ""
 
 
-    cPAux :: Field -> String
-    cPAux (Field field value) 
+    formatFields :: Field -> String
+    formatFields (Field field value) 
                         | field == "author"     = value++". "
                         | field == ""           = ""          -- ignore fields that don't belong to the entry
                         | field == "booktitle"  = "<em>"++value++"</em>, "
                         | field == "title"      = "<em>"++value++"</em>, "
                         | field == "pages"      = "pages "++value++". "
-                        | field == "year"       = value++"."
+                        | field == "year"       = value++". "
                         | field == "editor"     = "In: "++value++", editors, "
                         | otherwise             = value++", "
   

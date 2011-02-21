@@ -1,0 +1,33 @@
+html(
+  head("Bibliography")
+, [ a([Field("href", "apierce02types")], "apierce02types")
+  , p([], "|")
+  , a([Field("href", "cpierce02types")], "cpierce02types")
+  , p([], "|")
+  , a([Field("href", "pierce02types")], "pierce02types")
+  , p([], "|")
+  , hr
+  , table(
+      [Field("border", "0")]
+    , [ tr(
+          [Field("valign", "top")]
+        , [ a([Field("name", "apierce02types")], "apierce02types")
+          , p([], "Pierce, Benjamin C.. <em>Types and Programming Languages</em>, The MIT Press, Cambridge, Massachusetts, 2002. ")
+          ]
+        )
+      , tr(
+          [Field("valign", "top")]
+        , [ a([Field("name", "cpierce02types")], "cpierce02types")
+          , p([], "ZPierce, Benjamin C.. <em>Types and Programming Languages</em>, The MIT Press, Cambridge, Massachusetts, 2002. ")
+          ]
+        )
+      , tr(
+          [Field("valign", "top")]
+        , [ a([Field("name", "pierce02types")], "pierce02types")
+          , p([], "APierce, Benjamin C.. <em>Types and Programming Languages</em>, The MIT Press, Cambridge, Massachusetts, 2002. ")
+          ]
+        )
+      ]
+    )
+  ]
+)

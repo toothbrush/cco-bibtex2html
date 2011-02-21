@@ -21,4 +21,3 @@ module Common.HtmlTypes where
   
     type Td        = BlockElem
     type Title     = String
-    
