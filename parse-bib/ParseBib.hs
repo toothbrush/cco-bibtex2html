@@ -31,20 +31,20 @@ module Main where
                        <||> pBibBody
                             )
 
-    pBibBody = (pMany (pKeyValue <* pSym ',')) -- <*> pKeyValue <* pSym '}'
+    pBibBody = (pMany (pKeyValue <* pToken ",\n")) -- <*> pKeyValue <* pSym '}'
 
     pBibKey :: Parser String
     pBibKey  = pMunch (flip elem (['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9']))
 
     pKeyValue :: Parser Field
-    pKeyValue = FieldC <$> (pMunch1 (flip elem ['a'..'z'])) <* (pSym '=' *> spaces *> pSym '"') <*> (pMunch1 (/= '"') <* pSym '"' )
+    pKeyValue = FieldC <$> (spaces *> pMunch1 (flip elem ['a'..'z'])) <* (spaces *> pSym '=' *> spaces *> pSym '"') <*> (pMunch1 (/= '"') <* pSym '"' )
 
 
     spaces :: Parser String
-    spaces = pMunch (flip elem " \t")
+    spaces = pMunch (flip elem " \t\n")
 
 
-    pReference = pSym '{' *> pBibKey <* pSym ','
+    pReference = pSym '{' *> pBibKey <* pToken ",\n"
 
     pBraced :: Parser a -> Parser a
     pBraced a = pSym '{' *> a <* pSym '}'
