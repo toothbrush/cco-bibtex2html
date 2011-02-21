@@ -6,6 +6,11 @@ module Main where
     import Text.ParserCombinators.UU.BasicInstances
     import Text.ParserCombinators.UU.Examples
 
+    -- a bibtex file is just a list of entries:
+    
+    data BibTex = BibTex [Entry]
+                  deriving Show
+
     -- a bibtex entry:
     data Entry = Entry {entryType :: EntryType, 
                     reference :: String,
@@ -24,9 +29,9 @@ module Main where
     main = do inp <- getContents
               run parseBib inp
 
-    --parseBibs = pMany parseBib
+    parseBib = BibTex `pMerge` (pMany parseBibEntry)
 
-    parseBib = Entry `pMerge` (pOne pType
+    parseBibEntry = Entry `pMerge` (pOne pType
                        <||> pOne pReference
                        <||> pOne pBibEntryBody
                             )
