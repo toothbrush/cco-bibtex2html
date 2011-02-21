@@ -1,9 +1,9 @@
 default: parse-bib clean
 
-code: ParseBib.hs
+code: Main.hs
 
-parse-bib: ParseBib.hs
-	ghc -O --make -o parse-bib ParseBib.hs -i..
+parse-bib: Main.hs
+	ghc -O --make -o parse-bib Main.hs -i..
 
 clean:
 	rm *.hi
