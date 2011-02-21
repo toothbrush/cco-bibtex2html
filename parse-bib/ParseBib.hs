@@ -12,7 +12,6 @@ module Main where
     import CCO.Tree            (ATerm (App,List,String), Tree (fromTree, toTree))
     import CCO.Printing (pp, render_)
     import Control.Arrow
- --   import Util.UU
 
     -- a bibtex file is just a list of entries:
     
@@ -29,9 +28,6 @@ module Main where
                                  , List $ map fromTree (fields e) -- fields 
                                  ] 
 
-    instance Tree EntryType where
-        fromTree Book        = String "Book"
-        fromTree Proceedings = String "Proceedings"
 
     instance Tree Field where
         fromTree (Field k v) = App "Field" [ String k -- key 
@@ -39,18 +35,16 @@ module Main where
                                            ]
 
     -- a bibtex entry:
-    data Entry = Entry {entryType :: EntryType, 
-                    reference :: String,
-                    fields :: [Field]
-                   }
+    data Entry = Entry { entryType :: EntryType 
+                       , reference :: String
+                       , fields :: [Field]
+                       }
                    deriving Show
 
     data Field = Field String String -- Name and contents of field
                 deriving Show
 
-    data EntryType = Book 
-                 | Proceedings
-                 deriving Show
+    type EntryType = String
 
     bibTexparser :: Component String BibTex
     bibTexparser = component $ parseFeedback parseBib
@@ -112,14 +106,12 @@ module Main where
     pBraced :: Parser a -> Parser a
     pBraced a = pSym '{' *> a <* pSym '}'
 
-    pType :: Parser EntryType
-    pType = f <$> (string "@book" <|> string "@proceedings")
-      where f "@book" = Book
-            f "@proceedings" = Proceedings
+    pType :: Parser String
+    pType = (pSym '@' *> pMunch1 (flip elem ['a'..'z']))
 
 
     pAuthor :: Parser String
-    pAuthor = pMunch1 (/= '%') -- TODO FIX
+    pAuthor = pMunch1 (/= '\n') -- TODO FIX
 
     -- | string has been defined, even though it may seem extraneous in the 
     -- presence of the token parser. The advantage of string is that it 
