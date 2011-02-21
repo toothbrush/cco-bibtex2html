@@ -58,7 +58,7 @@ module Main where
     parseFeedback :: Parser BibTex -> String -> Feedback BibTex
     parseFeedback p inp = do let r@(a, errors) =  parse ( (,) <$> p <*> pEnd) (listToStr inp (0,0))
                              if null errors then  return a
-                                            else  do warn_ $ show $ head errors --warn_ (show_errors errors)
+                                            else  do sequence $ map (warn_ . show) errors
                                                      return a 
 
 
