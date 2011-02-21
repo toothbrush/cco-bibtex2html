@@ -1,5 +1,7 @@
 module Common.HtmlTypes where
 
+    import Common.BibTypes
+
     data Html = Html Head Body
                 deriving Show
   
@@ -8,13 +10,13 @@ module Common.HtmlTypes where
   
     type Body = [BlockElem]
   
-    data BlockElem = A Attr Ref 
+    data BlockElem = A [Field] Reference
                    | Hr
-                   | Table Attr [Tr]
-                   | P Attr String
+                   | Table [Field] [Tr]
+                   | P [Field] String
                    deriving Show
   
-    data Tr   = Tr Attr [Td]
+    data Tr   = Tr [Field] [Td]
                 deriving Show
   
     type Td        = BlockElem
