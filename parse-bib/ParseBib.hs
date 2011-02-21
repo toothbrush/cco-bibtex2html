@@ -58,8 +58,18 @@ module Main where
 
 
     main :: IO ()
-    main = do inp <- getContents
-              run parseBib inp
+    main = ioWrap pipeline
+
+    pipeline :: Component String String
+    pipeline =  bibTexparser  {- >>>   
+                bibTex2Aterm  >>>   
+                aTerm2String  -}
+                >>> flatten
+
+    flatten = component $ showBib
+    
+    showBib b = do return (show b) 
+    
 
     parseBib = BibTex `pMerge` (pMany parseBibEntry)
 
