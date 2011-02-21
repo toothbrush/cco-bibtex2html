@@ -13,7 +13,7 @@ module Main where
                    }
                    deriving Show
 
-    data Field = FieldC String String -- Name and contents of field
+    data Field = Field String String -- Name and contents of field
                 deriving Show
 
     data BibType = Book 
@@ -28,23 +28,26 @@ module Main where
 
     parseBib = Bib `pMerge` (pOne pType
                        <||> pOne pReference
-                       <||> pBibBody
+                       <||> pOne pBibBody
                             )
 
-    pBibBody = (pMany (pKeyValue <* pToken ",\n")) -- <*> pKeyValue <* pSym '}'
+    pBibBody = pList1Sep (pSym ',') (pKeyValue) <* pSym '}' <* spaces
+    
+    
+    ---- (pMany (pKeyValue <* pSym ',' <* spaces))  <* pSym '}'
 
     pBibKey :: Parser String
     pBibKey  = pMunch (flip elem (['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9']))
 
     pKeyValue :: Parser Field
-    pKeyValue = FieldC <$> (spaces *> pMunch1 (flip elem ['a'..'z'])) <* (spaces *> pSym '=' *> spaces *> pSym '"') <*> (pMunch1 (/= '"') <* pSym '"' )
+    pKeyValue = Field <$> (spaces *> pMunch1 (flip elem ['a'..'z'])) <* (spaces *> pSym '=' *> spaces *> pSym '"') <*> (pMunch1 (/= '"') <* pSym '"' )
 
 
     spaces :: Parser String
     spaces = pMunch (flip elem " \t\n")
 
 
-    pReference = pSym '{' *> pBibKey <* pToken ",\n"
+    pReference = pSym '{' *> pBibKey <* pToken "," <* spaces
 
     pBraced :: Parser a -> Parser a
     pBraced a = pSym '{' *> a <* pSym '}'
