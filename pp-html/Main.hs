@@ -2,6 +2,7 @@ module Main where
     
     import Common.HtmlTypes
     import Common.TreeInstances
+    import Common.BibTypes
     import CCO.Component hiding (parser)
     import CCO.Feedback
     import CCO.Printing
@@ -38,8 +39,29 @@ module Main where
                             printbody  bs       =  text "<body>"
                                                >-< indent 2 (foldr (>-<) empty bs)
                                                >-< text "</body>"
-                            printA     fs ref   =  text "unimplemented"
-                            printHr             =  text "unimplemented"
-                            printTable fs trs   =  text "unimplemented"
-                            printP     fs txt   =  text "unimplemented"
-                            printTr    fs bs    =  text "unimplemented"
+                            printA     fs ref   =  tagWithFields fs "a"
+                                               >|< text ref
+                                               >|< text "</a>"
+                            printHr             =  text "<hr>"
+                            printTable fs trs   =  tagWithFields fs "table"
+                                               >-< indent 2 (foldr (>-<) empty trs)
+                                               >-< text "</table>"
+                            printP     fs txt   =  if null fs then 
+                                                    text txt
+                                                   else tagWithFields fs "p" 
+                                                    >-< indent 2 (text txt)
+                                                    >-< text "</p>"
+                            printTr    fs tds   =  tagWithFields fs "tr"
+                                               >-< indent 2 (foldr (>-<) empty (map printTd tds))
+                                               >-< text "</tr>"
+                            printTd  blockelem  =  text "<td>"
+                                               >-< indent 2 blockelem
+                                               >-< text "</td>"
+
+    tagWithFields :: [Field] -> String -> Doc
+    tagWithFields fs tag = text ( "<" ++ tag)
+                        >|< (foldr (>|<) empty (map printField fs))
+                        >|< text ">"
+
+    printField :: Field -> Doc
+    printField (Field key val) = text $ " " ++ key ++ "=\"" ++ val ++ "\""
