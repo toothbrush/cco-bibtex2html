@@ -6,6 +6,13 @@ module Main where
     import Text.ParserCombinators.UU.BasicInstances
     import Text.ParserCombinators.UU.Examples
 
+    import CCO.Feedback
+    import CCO.Component
+    import CCO.Tree            (ATerm (App,List), Tree (fromTree, toTree))
+    import CCO.Printing (pp, render_)
+    import Control.Arrow
+ --   import Util.UU
+
     -- a bibtex file is just a list of entries:
     
     data BibTex = BibTex [Entry]
@@ -24,6 +31,31 @@ module Main where
     data EntryType = Book 
                  | Proceedings
                  deriving Show
+
+    bibTexparser :: Component String BibTex
+    bibTexparser = component $ parseFeedback parseBib
+
+    parseFeedback :: Parser BibTex -> String -> Feedback BibTex
+    parseFeedback p inp = do return $ myrun p inp
+                            -- return (BibTex [])
+
+    myrun :: Parser BibTex -> String -> BibTex
+    --myrun :: Show t =>  Parser t -> String -> String
+    myrun p inp = {- do -}  let r@(a, errors) =  parse ( (,) <$> p <*> pEnd) (listToStr inp (0,0))
+                      in a
+                {-
+                    putStrLn "--"
+                    putStrLn ("-- > Result: " ++ show a)
+                    if null errors then  return ()
+                                   else  do putStr ("-- > Correcting steps: \n")
+                                            show_errors errors
+                    putStrLn "-- "
+                    -}
+
+--    bibTex2Aterm :: Component BibTex ATerm
+--    bibTex2Aterm = component (return . fromTree) 
+
+
 
     main :: IO ()
     main = do inp <- getContents
