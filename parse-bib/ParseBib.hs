@@ -7,7 +7,7 @@ module Main where
     import Text.ParserCombinators.UU.Examples
 
     -- a bibtex entry:
-    data Bib = Bib {entryType :: BibType, 
+    data Entry = Entry {entryType :: EntryType, 
                     reference :: String,
                     fields :: [Field]
                    }
@@ -16,7 +16,7 @@ module Main where
     data Field = Field String String -- Name and contents of field
                 deriving Show
 
-    data BibType = Book 
+    data EntryType = Book 
                  | Proceedings
                  deriving Show
 
@@ -26,12 +26,13 @@ module Main where
 
     --parseBibs = pMany parseBib
 
-    parseBib = Bib `pMerge` (pOne pType
+    parseBib = Entry `pMerge` (pOne pType
                        <||> pOne pReference
-                       <||> pOne pBibBody
+                       <||> pOne pBibEntryBody
                             )
 
-    pBibBody = pList1Sep (pSym ',') (pKeyValue) <* pSym '}' <* spaces
+    pBibEntryBody :: Parser [Field]
+    pBibEntryBody = pList1Sep (pSym ',') (pKeyValue) <* pSym '}' <* spaces
     
     
     ---- (pMany (pKeyValue <* pSym ',' <* spaces))  <* pSym '}'
@@ -52,7 +53,7 @@ module Main where
     pBraced :: Parser a -> Parser a
     pBraced a = pSym '{' *> a <* pSym '}'
 
-    pType :: Parser BibType
+    pType :: Parser EntryType
     pType = f <$> (string "@book" <|> string "@proceedings")
       where f "@book" = Book
             f "@proceedings" = Proceedings
