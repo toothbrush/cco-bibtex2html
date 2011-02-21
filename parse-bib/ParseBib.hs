@@ -1,4 +1,5 @@
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleContexts,
+             NoMonomorphismRestriction #-}
 module Main where
     
     --import Parsers etc...
@@ -8,7 +9,7 @@ module Main where
 
     import CCO.Feedback
     import CCO.Component
-    import CCO.Tree            (ATerm (App,List), Tree (fromTree, toTree))
+    import CCO.Tree            (ATerm (App,List,String), Tree (fromTree, toTree))
     import CCO.Printing (pp, render_)
     import Control.Arrow
  --   import Util.UU
@@ -17,6 +18,25 @@ module Main where
     
     data BibTex = BibTex [Entry]
                   deriving Show
+
+
+    instance Tree BibTex where
+        fromTree (BibTex l) = App "BibTex" [List (map fromTree l)]
+
+    instance Tree Entry where
+        fromTree e = App "Entry" [ fromTree $ entryType e         -- type
+                                 , fromTree $ reference e         -- ref
+                                 , List $ map fromTree (fields e) -- fields 
+                                 ] 
+
+    instance Tree EntryType where
+        fromTree Book        = String "Book"
+        fromTree Proceedings = String "Proceedings"
+
+    instance Tree Field where
+        fromTree (Field k v) = App "Field" [ String k -- key 
+                                           , String v -- value
+                                           ]
 
     -- a bibtex entry:
     data Entry = Entry {entryType :: EntryType, 
@@ -36,24 +56,17 @@ module Main where
     bibTexparser = component $ parseFeedback parseBib
 
     parseFeedback :: Parser BibTex -> String -> Feedback BibTex
-    parseFeedback p inp = do return $ myrun p inp
-                            -- return (BibTex [])
+    parseFeedback p inp = do let r@(a, errors) =  parse ( (,) <$> p <*> pEnd) (listToStr inp (0,0))
+                             if null errors then  return a
+                                            else  do warn_ $ show $ head errors --warn_ (show_errors errors)
+                                                     return a 
 
-    myrun :: Parser BibTex -> String -> BibTex
-    --myrun :: Show t =>  Parser t -> String -> String
-    myrun p inp = {- do -}  let r@(a, errors) =  parse ( (,) <$> p <*> pEnd) (listToStr inp (0,0))
-                      in a
-                {-
-                    putStrLn "--"
-                    putStrLn ("-- > Result: " ++ show a)
-                    if null errors then  return ()
-                                   else  do putStr ("-- > Correcting steps: \n")
-                                            show_errors errors
-                    putStrLn "-- "
-                    -}
 
---    bibTex2Aterm :: Component BibTex ATerm
---    bibTex2Aterm = component (return . fromTree) 
+    bibTex2Aterm :: Component BibTex ATerm
+    bibTex2Aterm = component (return . fromTree) 
+
+    aTerm2String :: Component ATerm String
+    aTerm2String = arr (render_ 100 . pp)
 
 
 
@@ -61,10 +74,9 @@ module Main where
     main = ioWrap pipeline
 
     pipeline :: Component String String
-    pipeline =  bibTexparser  {- >>>   
+    pipeline =  bibTexparser  >>>   
                 bibTex2Aterm  >>>   
-                aTerm2String  -}
-                >>> flatten
+                aTerm2String 
 
     flatten = component $ showBib
     
