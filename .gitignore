@@ -1,1 +1,3 @@
 parsedbib.aterm
+*.hi
+*.o

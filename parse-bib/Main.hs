@@ -7,7 +7,7 @@ module Main where
     import CCO.Component
     import Control.Arrow
 
-    import Common.Types 
+    import Common.BibTypes 
     import Common.TreeInstances
     import Common.ATermUtils
     import Parser

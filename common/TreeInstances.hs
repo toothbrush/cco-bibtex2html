@@ -2,7 +2,7 @@ module Common.TreeInstances where
     
     import CCO.Tree            (ATerm (App,List,String), Tree (fromTree, toTree))
     import CCO.Tree.Parser
-    import Common.Types
+    import Common.BibTypes
     import Control.Applicative
 
     instance Tree BibTex where

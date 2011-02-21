@@ -6,7 +6,7 @@ module ParserUtils where
     import Text.ParserCombinators.UU.BasicInstances
     import Text.ParserCombinators.UU.Examples
 
-    import Common.Types
+    import Common.BibTypes
     import CCO.Feedback
 
     parseFeedback :: Parser BibTex -> String -> Feedback BibTex

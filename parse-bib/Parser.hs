@@ -6,7 +6,7 @@ module Parser where
     import Text.ParserCombinators.UU.Examples
 
     import ParserUtils
-    import Common.Types
+    import Common.BibTypes
 
     parseBib = BibTex `pMerge` (pMany parseBibEntry)
 
