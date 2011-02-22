@@ -27,6 +27,7 @@ Cabal-version:       >=1.4
 extra-source-files:  example1.bib
                      example2.bib
                      example3.bib
+                     example4.bib
 data-files:          README
                      haddock.pdf
 
