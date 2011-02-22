@@ -21,7 +21,7 @@ module Common.AllowedFields where
                          ["volume","number","pages","month","note","key"]))
     keysBook          = ("book",
                         (["author","title","publisher","year"],
-                         ["volume","series","edition","month","note","key","pages","address"]))--Editorissue
+                         ["editor","volume","series","edition","month","note","key","pages","address"]))
     keysBooklet       = ("booklet",
                         (["title"],
                          ["author","howpublished","address","month","year","note","key"]))
@@ -30,7 +30,7 @@ module Common.AllowedFields where
                          ["editor","pages","organization","publisher","address","month","note","key"]))
     keysInbook        = ("inbook",
                         (["author","title","chapter","pages","publisher","year"],
-                         ["volume","series","address","edition","month","note","key","pages"]))--editorissue
+                         ["editor","volume","series","address","edition","month","note","key","pages"]))
     keysIncollection  = ("incollection",
                         (["author","title","booktitle","year"],
                          ["editor","pages","organization","publisher","address","month","note","key"]))
