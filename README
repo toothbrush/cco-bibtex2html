@@ -55,6 +55,9 @@ so don't be surprised if it's not finished after 5 seconds.
 
 FOR THE PATIENT (or the more curious)
 
+Note that instead of a Makefile, Cabal's more advanced build system is used. This solves a 
+lot of ugly things one runs into when using Makefiles for a small Haskell project.
+
 Features
 
 This implementation of BibTeX2HTML is not comprehensive, i.e. there are some aspects of 

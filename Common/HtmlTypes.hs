@@ -38,6 +38,10 @@ module Common.HtmlTypes where
     -- This will prove useful when we want to pretty-print the html (or render
     -- it in any form), since the above type is only an abstract representation of 
     -- an HTML document.
+    --
+    -- Since Html is tree-like, it seems logical to use a fold to convert it to some other
+    -- (tree-like) format, in our case, this is Doc, the CCO pretty-print data structure. The actual
+    -- fold for this is defined in PrettyPrintHTML.Tool. 
     type HtmlAlgebra html head body block tr = (
                                                     head -> body -> html,  --  how to replace the Html constructor
                                                     (
@@ -52,6 +56,7 @@ module Common.HtmlTypes where
                                                     ),
                                                     [Field] -> [block] -> tr --  table row
                                                 )
+
     -- | The function which folds over an HTML tree, given an algebra as defined above.
     foldHtml :: HtmlAlgebra html head body block tr -> Html -> html
     foldHtml (

@@ -41,11 +41,14 @@ module Common.BibTypes where
 
     -- | the type of the bibtex algebra. Used to fold over a bibtex library,
     -- like when we want to convert a BibTeX structure into HTML. 
+    --
+    -- This seems the most natural way to define possible conversions from BibTex to 
+    -- other (possibly tree-like) formats, such as Html later on. 
     type BibTexAlgebra bibtex preamble entry = ([preamble] -> [entry] -> bibtex, 
                                                 String -> preamble,
                                                 EntryType -> Reference -> [Field] -> entry)
 
-    -- | How to fold over a BibTeX tree. 
+    -- | How to fold over a BibTeX tree. Used when converting to Html in Bib2HTML.Tool.
     foldBibTex :: BibTexAlgebra bibtex preamble entry -> BibTex -> bibtex
     foldBibTex (bib, pa, entry) = fBibTex where
        fBibTex (BibTex preamble lentries) = bib (map pa preamble) (map fEntry lentries)
