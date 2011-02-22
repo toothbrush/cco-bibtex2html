@@ -1,0 +1,30 @@
+     % 
+     % This bib file illustrates a number of features:
+     %  - comments
+     %  - unknown attributes are dropped
+     %  - the fields are sorted sanely
+     %  - duplicate fields are ignored
+
+@preamble { "this is test preamble" }
+
+    % indentation and spacing isn't a problem. 
+@book{pierce02types,
+    year = "2002",
+      author = "Pierce, Benjamin C.",        title  = "Types and Programming Languages", 
+      publisher = "The MIT Press", 
+    address = "Cambridge, Massachusetts" % another comment!
+}
+% More comments.
+% notice how multiple preamble entries are possible. 
+% these are all placed above the bibliography in the final html.
+
+@preamble {"   test preamble 2."}
+
+@inproceedings{loeh03dependency,
+    author = "Loh, Andres and Clarke, Dave and Jeuring, Johan",
+    numauthors = "3",
+    title =  "Dependency-style Generic Haskell",
+    title = "also this",
+    editor = "Runciman, Colin and Shivers, Olin", 
+    booktitle = "Proceedings of the Eighth ACM SIGPLAN International Conference on Functional Programming, ICFP 2003, Uppsala, Sweden, August 25--29, 2003",
+    pages = "141--152", publisher = "ACM Press", year = 2003}

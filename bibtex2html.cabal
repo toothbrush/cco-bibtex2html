@@ -24,8 +24,11 @@ Maintainer:          p.d.vanderwalt@students.uu.nl
 Copyright:           2010 P. D. van der Walt
 Build-type:          Simple
 Cabal-version:       >=1.4
-extra-source-files:  example.bib
+extra-source-files:  example1.bib
+                     example2.bib
+                     example3.bib
 data-files:          README
+                     haddock.pdf
 
 Library
     Exposed-modules: 

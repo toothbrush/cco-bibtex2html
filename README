@@ -111,4 +111,4 @@ $ cabal haddock
 and opening the resulting file, dist/doc/html/bibtex2html/index.html. This file includes
 an introduction as well as links to the rest of the documentation. For completeness, a
 PDF version of the Haddock documentation is included, but the recommendation is to 
-use the HTML version.
+use the HTML version. The PDF version of Haddock can be found in ./haddock.pdf
