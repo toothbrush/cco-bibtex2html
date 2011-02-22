@@ -53,6 +53,14 @@ so don't be surprised if it's not finished after 5 seconds.
 
 -------------------------------------------------------------------------------------------
 
+EXAMPLES
+
+A number of examples are included, see ./example?.bib, the specifics of each examle
+will be explained in the comments. The examples illustrate the features of this 
+implementation of bib2html. 
+
+-------------------------------------------------------------------------------------------
+
 FOR THE PATIENT (or the more curious)
 
 Note that instead of a Makefile, Cabal's more advanced build system is used. This solves a 
