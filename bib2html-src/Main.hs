@@ -16,15 +16,27 @@ module Main where
     pipeline :: Component String String
     pipeline =  parser        >>> 
                 aTerm2BibTex  >>> 
-                checkDups     >>> {-
-                validator     >>>   -}
+                checkDups     >>> 
+                checkRequired >>> 
                 sorter        >>> 
                 bibTex2HTML   >>>   
                 html2Aterm    >>>
                 aTerm2String
    
+    checkRequired :: Component BibTex BibTex
+    checkRequired = component $ (\(BibTex es) -> do trace_ "Checking required and optional fields..."
+                                                    checkedEntries <- mapM checkEntry es
+                                                    return (BibTex (checkedEntries))
+                                )
+
+    checkEntry :: Entry -> Feedback Entry
+    checkEntry = (\e -> do warn_ "test"
+                           return e
+                 )
+
     sorter :: Component BibTex BibTex
-    sorter = component $ (\(BibTex entries) -> return (BibTex (
+    sorter = component $ (\(BibTex entries) -> do trace_ "Sorting bibliography..."
+                                                  return (BibTex (
                                                         (sortBy (sortGen "author")
                                                             (sortBy (sortGen "year")
                                                                 (sortBy (sortGen "title") 
@@ -32,7 +44,7 @@ module Main where
                                                                 ) 
                                                             )
                                                         )
-                                                    )))
+                                                     )))
 
     sortGen :: String -> Entry -> Entry -> Ordering
     sortGen key e1 e2 = compare v1 v2
