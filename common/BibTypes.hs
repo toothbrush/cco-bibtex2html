@@ -21,6 +21,14 @@ module Common.BibTypes where
     getValue :: Field -> String
     getValue (Field _ v) = v
 
+    maybegetKey :: Maybe Field -> Maybe String
+    maybegetKey Nothing            = Nothing
+    maybegetKey (Just (Field k _)) = Just k
+
+    maybegetValue :: Maybe Field -> Maybe String
+    maybegetValue  Nothing           = Nothing
+    maybegetValue (Just (Field _ v)) = Just v
+
     type EntryType = String
     type Reference = String
 
@@ -44,7 +52,13 @@ module Common.BibTypes where
                                        | otherwise = lookupField key fs
 
     instance Ord Field where
-        compare (Field k1 v1) (Field k2 v2) = compare v1 v2
+        compare (Field k1 v1) (Field k2 v2) 
+            | k1 == "author" = LT
+            | k1 == "year"   = GT
+            | k1 == "title" 
+           && k2 == "author" = GT
+            | k1 == "title"  = LT
+            | otherwise      = EQ
 
     instance Eq Field where
-        (==) (Field k1 v1) (Field k2 v2) = k1 == k2 -- && v1 == v2
+        (==) (Field k1 v1) (Field k2 v2) = k1 == k2

@@ -29,12 +29,22 @@ module Main where
     checkRequired = component $ (\(BibTex pa es) -> do trace_ "Checking required and optional fields..."
                                                        checkedEntries <- mapM checkEntry es
                                                        let nonempties =  filter empty checkedEntries
-                                                       checkedOptionals <- mapM checkOptionals nonempties
+                                                       withSortedFields <- mapM sortFields nonempties
+                                                       checkedOptionals <- mapM checkOptionals withSortedFields
                                                        return (BibTex pa checkedOptionals)
                                 )
 
     empty :: Entry -> Bool
     empty e = (not.null) (fields e)
+
+    sortFields :: Entry -> Feedback Entry
+    sortFields = (\e -> do  let entrytype = entryType e
+                            let ref = reference e
+                            let fs = fields e
+                            trace_ ("Sorting fields for entry ["++ref++"]...")
+                            trace_ (show (sort fs))
+                            return (Entry entrytype ref (sort fs))
+                 )
 
     checkOptionals :: Entry -> Feedback Entry
     checkOptionals = (\e -> do  let entrytype = entryType e
@@ -64,7 +74,7 @@ module Main where
                                                       let missings = map snd $ filter (not.fst) reqFieldsExistence
                                                       if null missings 
                                                         then return e
-                                                          else fail ("ERROR: required fields not found: \n"++(concatMap (\i -> " > "++i++"\n") missings))
+                                                        else fail ("ERROR: required fields not found: \n"++(concatMap (\i -> " > "++i++"\n") missings))
                  )
 
     sorter :: Component BibTex BibTex
@@ -80,7 +90,7 @@ module Main where
                                                         )))
 
     sortGen :: String -> Entry -> Entry -> Ordering
-    sortGen key e1 e2 = compare v1 v2
+    sortGen key e1 e2 = compare (maybegetValue v1) (maybegetValue v2)
             where v1 = lookupField key $ fields e1
                   v2 = lookupField key $ fields e2
 
@@ -109,7 +119,7 @@ module Main where
                                  in  Html (Head "Bibliography") $ 
                                      (separate arefs) ++ preamble pa ++ [Hr, Table [(Field "border" "0")] tableEntries]
         fEntry spec ref attr  =  (generateIndex ref, generateTableRows spec ref attr)
-        fPa ss = P [] (ss)
+        fPa ss = P [Field "style" "border-style: solid;"] ss
         preamble pa = if null pa then []
                       else Hr : pa
 
