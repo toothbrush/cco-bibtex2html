@@ -23,13 +23,15 @@ Author:              Paul van der Walt (3120805)
 Maintainer:          p.d.vanderwalt@students.uu.nl
 Copyright:           2010 P. D. van der Walt
 Build-type:          Simple
-Cabal-version:       >=1.4
+Cabal-version:       >=1.6
 extra-source-files:  example1.bib
                      example2.bib
                      example3.bib
                      example4.bib
 data-files:          README
                      haddock.pdf
+                     latex-doc/*.tex
+                     latex-doc/haddock.sty
 
 Library
     Exposed-modules: 
