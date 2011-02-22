@@ -1,10 +1,10 @@
-default: pp-html clean
+all: pp-html clean
 
-code: Main.hs
-
-pp-html: Main.hs
+pp-html: force_look
 	ghc -O --make -o pp-html Main.hs -i..
 
 clean:
-	rm *.hi
-	rm *.o
+	-rm *.hi *.o
+
+force_look:
+	true
