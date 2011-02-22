@@ -9,7 +9,8 @@ module Main where
     import Common.AllowedFields
     import Common.ATermUtils
     import Control.Arrow
-    import Data.List (intersperse,nub,group,sortBy,sort)
+    import Data.Maybe
+    import Data.List
     
     main :: IO ()
     main = ioWrap pipeline
@@ -28,17 +29,34 @@ module Main where
     checkRequired = component $ (\(BibTex es) -> do trace_ "Checking required and optional fields..."
                                                     checkedEntries <- mapM checkEntry es
                                                     let nonempties =  filter empty checkedEntries
-                                                    return (BibTex nonempties)
+                                                    checkedOptionals <- mapM checkOptionals nonempties
+                                                    return (BibTex checkedOptionals)
                                 )
 
     empty :: Entry -> Bool
     empty e = (not.null) (fields e)
 
+    checkOptionals :: Entry -> Feedback Entry
+    checkOptionals = (\e -> do  let entrytype = entryType e
+                                let ref = reference e
+                                let fs = fields e
+                                trace_ ("Checking entry ["++ref++"] for optional fields...")
+                                let (req,opt) = fromJust (lookup entrytype allowedTable)
+                                let filledIn = map getKey fs
+                                let optFieldsExistence = map (\i -> (flip elem (opt++req) i, i)) filledIn
+                                let missings = map snd $ filter (not.fst) optFieldsExistence
+                                if null missings 
+                                	then return e
+                                    else do warn_ ("WARNING: nonexistent field(s) found and ignored: \n"++(concatMap (\i -> " > "++i++"\n") missings))
+                                    	    warn_ (show (fs\\(map (\str -> Field str "") missings)))
+                                    	    return (Entry entrytype ref (fs\\(map (\str -> Field str "") missings)))
+                 )
+
     checkEntry :: Entry -> Feedback Entry
     checkEntry = (\e -> do  let entrytype = entryType e
                             let ref = reference e
                             let fs = fields e
-                            trace_ ("Checking entry ["++ref++"]...")
+                            trace_ ("Checking entry ["++ref++"] for required fields...")
                             case lookup entrytype allowedTable of
                                 Nothing         -> do warn_ ("Entry type \"" ++ entrytype ++ "\" doesn't exist, entry ommitted!")
                                                       return (Entry "" "" [])

@@ -46,4 +46,4 @@ module Common.BibTypes where
         compare (Field k1 v1) (Field k2 v2) = compare v1 v2
 
     instance Eq Field where
-        (==) (Field k1 v1) (Field k2 v2) = k1 == k2 && v1 == v2
+        (==) (Field k1 v1) (Field k2 v2) = k1 == k2 -- && v1 == v2
