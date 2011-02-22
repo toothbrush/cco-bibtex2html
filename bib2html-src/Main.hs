@@ -27,8 +27,12 @@ module Main where
     checkRequired :: Component BibTex BibTex
     checkRequired = component $ (\(BibTex es) -> do trace_ "Checking required and optional fields..."
                                                     checkedEntries <- mapM checkEntry es
-                                                    return (BibTex (checkedEntries))
+                                                    let nonempties =  filter empty checkedEntries
+                                                    return (BibTex nonempties)
                                 )
+
+    empty :: Entry -> Bool
+    empty e = (not.null) (fields e)
 
     checkEntry :: Entry -> Feedback Entry
     checkEntry = (\e -> do  let entrytype = entryType e
@@ -36,9 +40,9 @@ module Main where
                             let fs = fields e
                             trace_ ("Checking entry ["++ref++"]...")
                             case lookup entrytype allowedTable of
-                                Nothing -> warn_ ("Entry type \"" ++ entrytype ++ "\" doesn't exist!")
-                                Just _  -> return ()
-                            return e
+                                Nothing -> do warn_ ("Entry type \"" ++ entrytype ++ "\" doesn't exist, entry ommitted!")
+                                              return (Entry "" "" [])
+                                Just _  -> return e
                  )
 
     sorter :: Component BibTex BibTex
