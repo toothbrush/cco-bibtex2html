@@ -71,6 +71,7 @@ The most notable features are listed below.
 * Checks for duplicate keys (and only displays first definition)
 * Allows for comments (% ...), both after code and on their own line
 * Filters duplicate fields in entries (i.e. "author" defined twice)
+* Warnings for all detected errors
 
 In a future version, possibilities for improvement include:
 
@@ -79,8 +80,24 @@ In a future version, possibilities for improvement include:
 * Nicer hyperlinks (i.e. Johnson 2002 -> [J02])
 * Support for variables (@string) 
 
-
-
 Requirements:
 
+This package has been tested on Mac OS X.6 and Linux 2.6.35, using GHC6.12.3 and GHC7.0.1.
+Also required are at least the following packages (can be obtained via the Haskell Cabal):
+
+- cco
+- uu-parsinglib
+- haskell98
+
 Documentation:
+
+For extensive documentation, as well as a report detailing implementational details and 
+architecture of this suite, we refer the reader to the Haddock generated documentation. 
+This can be obtained by running
+
+$ cabal haddock
+
+and opening the resulting file, dist/doc/html/bibtex2html/index.html. This file includes
+an introduction as well as links to the rest of the documentation. For completeness, a
+PDF version of the Haddock documentation is included, but the recommendation is to 
+use the HTML version.
