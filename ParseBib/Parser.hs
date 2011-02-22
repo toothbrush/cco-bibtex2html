@@ -1,11 +1,11 @@
-module Parser where
+module ParseBib.Parser where
 
     --import Parsers etc...
     import Text.ParserCombinators.UU
     import Text.ParserCombinators.UU.BasicInstances
     import Text.ParserCombinators.UU.Examples
 
-    import ParserUtils
+    import ParseBib.ParserUtils
     import Common.BibTypes
     import Char (isDigit)
 

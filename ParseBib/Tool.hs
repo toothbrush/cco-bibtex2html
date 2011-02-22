@@ -1,5 +1,5 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
-module Main where
+module ParseBib.Tool where
     
     import CCO.Feedback
     import CCO.Tree     (ATerm (App,List,String), Tree (fromTree, toTree))
@@ -10,11 +10,11 @@ module Main where
     import Common.BibTypes 
     import Common.TreeInstances
     import Common.ATermUtils
-    import Parser
-    import ParserUtils
+    import ParseBib.Parser
+    import ParseBib.ParserUtils
 
-    main :: IO ()
-    main = ioWrap pipeline
+    mainFunc :: IO ()
+    mainFunc = ioWrap pipeline
 
     pipeline :: Component String String
     pipeline =  removeComments >>>

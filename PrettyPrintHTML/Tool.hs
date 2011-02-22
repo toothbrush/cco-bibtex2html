@@ -1,4 +1,4 @@
-module Main where
+module PrettyPrintHTML.Tool where
     
     import Common.HtmlTypes
     import Common.TreeInstances
@@ -9,8 +9,8 @@ module Main where
     import Control.Arrow
     import CCO.Tree            (ATerm (App,List), Tree (fromTree, toTree), parser)
 
-    main :: IO ()
-    main =  ioWrap pipeline
+    mainFunc :: IO ()
+    mainFunc =  ioWrap pipeline
 
     pipeline :: Component String String
     pipeline = parser >>>

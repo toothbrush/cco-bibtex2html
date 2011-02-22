@@ -1,4 +1,4 @@
-module Main where
+module AbstractBib2HTML.Tool where
     
     import CCO.Component hiding (parser)
     import CCO.Feedback
@@ -12,8 +12,8 @@ module Main where
     import Data.Maybe
     import Data.List
     
-    main :: IO ()
-    main = ioWrap pipeline
+    mainFunc :: IO ()
+    mainFunc = ioWrap pipeline
    
     pipeline :: Component String String
     pipeline =  parser        >>> 

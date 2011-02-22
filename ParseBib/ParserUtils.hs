@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleContexts #-}
 
-module ParserUtils where
+module ParseBib.ParserUtils where
 
     import Text.ParserCombinators.UU
     import Text.ParserCombinators.UU.BasicInstances
