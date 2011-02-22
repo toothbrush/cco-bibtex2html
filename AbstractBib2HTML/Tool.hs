@@ -1,3 +1,7 @@
+-- | this module implements the bib2html tool. It contains the complete pipeline for
+-- this part of the suite, converting from a BibTex ATerm into an Html ATerm.
+-- This is also where the main validation is done on the BibTeX database, to make sure that there
+-- are no duplicates, etc. 
 module AbstractBib2HTML.Tool where
     
     import CCO.Component hiding (parser)
@@ -12,9 +16,11 @@ module AbstractBib2HTML.Tool where
     import Data.Maybe
     import Data.List
     
+    -- | the default main function. Just wrap a pipeline in IO
     mainFunc :: IO ()
     mainFunc = ioWrap pipeline
    
+    -- | The pipeline for bib2html. 
     pipeline :: Component String String
     pipeline =  parser        >>> 
                 aTerm2BibTex  >>> 
@@ -25,18 +31,24 @@ module AbstractBib2HTML.Tool where
                 html2Aterm    >>>
                 aTerm2String
    
+    -- | checks a number of things. Make sure all required fields are in all entries, and that there are no fields 
+    -- which are unrecognised (such as misspelled fields). Also sorts the fields (author, title, the rest, finally year). Finally
+    -- checks that all the other fields are at least optional, since we don't want disallowed fields in entries. 
     checkRequired :: Component BibTex BibTex
     checkRequired = component $ (\(BibTex pa es) -> do trace_ "Checking required and optional fields..."
                                                        checkedEntries <- mapM checkEntry es
-                                                       let nonempties =  filter empty checkedEntries
-                                                       withSortedFields <- mapM sortFields nonempties
-                                                       checkedOptionals <- mapM checkOptionals withSortedFields
+                                                       let nonempties =  filter empty checkedEntries -- illegal fields are replaced with empty, so filter these out.
+                                                       withSortedFields <- mapM sortFields nonempties -- sort the fields
+                                                       checkedOptionals <- mapM checkOptionals withSortedFields -- check all fields are at least optional
                                                        return (BibTex pa checkedOptionals)
                                 )
 
+    -- | this function returns whether a given entry has 0 fields. We don't want those. 
     empty :: Entry -> Bool
     empty e = (not.null) (fields e)
 
+    -- | Sort fields, and nub duplicates. Here we just need to call `sort`, since
+    -- the Ord class is implemented on Fields.
     sortFields :: Entry -> Feedback Entry
     sortFields = (\e -> do  let entrytype = entryType e
                             let ref = reference e
@@ -48,6 +60,7 @@ module AbstractBib2HTML.Tool where
                             return (Entry entrytype ref (sort (nub fs)))
                  )
 
+    -- | Checks that all fields in an entry are at least optional. If they are not, issue a warning and empty them. These will later be pruned.
     checkOptionals :: Entry -> Feedback Entry
     checkOptionals = (\e -> do  let entrytype = entryType e
                                 let ref = reference e
@@ -63,6 +76,8 @@ module AbstractBib2HTML.Tool where
                                             return (Entry entrytype ref (fs\\(map (\str -> Field str "") missings)))
                  )
 
+    -- | Check that all required fields are present, depending on the entry's type. If they aren't issue an error and stop. This is the only 
+    -- condition on which the bib2html program fails. 
     checkEntry :: Entry -> Feedback Entry
     checkEntry = (\e -> do  let entrytype = entryType e
                             let ref = reference e
@@ -79,6 +94,7 @@ module AbstractBib2HTML.Tool where
                                                         else fail ("ERROR: required fields not found: \n"++(concatMap (\i -> " > "++i++"\n") missings))
                  )
 
+    -- | Sort entries by author, year, title. Makes use of the usual lexical sort on strings. 
     sorter :: Component BibTex BibTex
     sorter = component $ (\(BibTex pa entries) -> do trace_ "Sorting bibliography..."
                                                      return (BibTex pa (
@@ -91,12 +107,18 @@ module AbstractBib2HTML.Tool where
                                                            )
                                                         )))
 
-    sortGen :: String -> Entry -> Entry -> Ordering
+    -- | helper function which compares two entries and returns an ordering, based on the key requested.
+    sortGen :: String -- ^ the key to sort on
+            -> Entry  -- ^ entry 1
+            -> Entry  -- ^ entry 2
+            -> Ordering
     sortGen key e1 e2 = compare (maybegetValue v1) (maybegetValue v2)
             where v1 = lookupField key $ fields e1
                   v2 = lookupField key $ fields e2
 
 
+    -- | This function eliminates entries with the same name. The first found entry with a certain name is retained. 
+    -- A warning is also issued. 
     checkDups :: Component BibTex BibTex
     checkDups = component (\inp@(BibTex pa entries) -> do trace_ "Checking for duplicate entry identifiers..."
                                                           let references = map reference entries 
@@ -110,10 +132,14 @@ module AbstractBib2HTML.Tool where
                                                           return (BibTex pa (nub entries))
                                                           )
   
+    -- | Convert a BibTex tree to Html by folding with the bib2htmlAlg algebra.
     bibTex2HTML :: Component BibTex Html
     bibTex2HTML = component (\inp -> do trace_ "Converting BibTeX to HTML..."
                                         return $ foldBibTex bib2htmlAlg inp)
 
+    -- | this algebra converts a BibTex tree into an Html representation, including
+    -- a list of hyperlinks at the top, maybe preamble blocks, and the table with the
+    -- entries. 
     bib2htmlAlg :: BibTexAlgebra Html BlockElem ([BlockElem],Tr)
     bib2htmlAlg = (fBibTex, fPa, fEntry) where
         fBibTex pa entries    =  let tableEntries = (snd . unzip) entries
@@ -125,12 +151,16 @@ module AbstractBib2HTML.Tool where
         preamble pa = if null pa then []
                       else Hr : pa
 
+    -- | used to place a pipe character between the list of hyperlinks 
     separate :: [BlockElem] -> [BlockElem]
     separate = intersperse (P [] "|")
 
+    -- | turns a reference into a hyperlink 
     generateIndex :: Reference -> [BlockElem]
     generateIndex ref = [ A [Field "href" ('#':ref)] ref ]
 
+    -- | turns an Entry (or more accurately, given a type, a name, and a list of attributes) into
+    -- a table row
     generateTableRows :: EntryType -> Reference -> [Field] -> Tr
     generateTableRows spec ref attr = Tr [Field "valign" "top"
                                          ] 
@@ -138,10 +168,14 @@ module AbstractBib2HTML.Tool where
                                          , P [] (flattenEntry spec attr)
                                          ]
 
+
+    -- | given a type and a list of attributes, flattens an entry into a string, for placement
+    -- in a table cell
     flattenEntry :: EntryType -> [Field] -> String
     flattenEntry spec = foldr ((++) . formatFields) ""
 
-
+    -- | format a field into a string. Possibly do special formatting things, depending on 
+    -- if it's a title, for example. 
     formatFields :: Field -> String
     formatFields (Field field value) 
                         | field == "author"     = value++". "
