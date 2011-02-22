@@ -8,7 +8,7 @@ module Main where
     import Common.TreeInstances
     import Common.ATermUtils
     import Control.Arrow
-    import Data.List (intersperse,nub,group,sort)
+    import Data.List (intersperse,nub,group,sortBy,sort)
     
     main :: IO ()
     main = ioWrap pipeline
@@ -17,12 +17,28 @@ module Main where
     pipeline =  parser        >>> 
                 aTerm2BibTex  >>> 
                 checkDups     >>> {-
-                validator     >>>   
-                sorter        >>> -}
+                validator     >>>   -}
+                sorter        >>> 
                 bibTex2HTML   >>>   
                 html2Aterm    >>>
                 aTerm2String
    
+    sorter :: Component BibTex BibTex
+    sorter = component $ (\(BibTex entries) -> return (BibTex (
+                                                        (sortBy (sortGen "author")
+                                                            (sortBy (sortGen "year")
+                                                                (sortBy (sortGen "title") 
+                                                                    entries
+                                                                ) 
+                                                            )
+                                                        )
+                                                    )))
+
+    sortGen :: String -> Entry -> Entry -> Ordering
+    sortGen key e1 e2 = compare v1 v2
+            where v1 = lookupField key $ fields e1
+                  v2 = lookupField key $ fields e2
+
 
     checkDups :: Component BibTex BibTex
     checkDups = component (\inp@(BibTex entries) -> do trace_ "Checking for duplicate entry identifiers..."

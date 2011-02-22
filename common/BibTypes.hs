@@ -28,3 +28,16 @@ module Common.BibTypes where
        fBibTex (BibTex lentries)     =  bib $ map fEntry lentries
        fEntry  (Entry spec ref attr) =  entry spec ref attr
     
+    instance Eq Entry where
+        (==) e1 e2 = reference e1 == reference e2
+
+    lookupField :: String -> [Field] -> Maybe Field
+    lookupField key []                 = Nothing
+    lookupField key (f@(Field k v):fs) | key == k  = Just f
+                                       | otherwise = lookupField key fs
+
+    instance Ord Field where
+        compare (Field k1 v1) (Field k2 v2) = compare v1 v2
+
+    instance Eq Field where
+        (==) (Field k1 v1) (Field k2 v2) = k1 == k2 && v1 == v2
