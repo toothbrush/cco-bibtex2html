@@ -1,0 +1,171 @@
+\haddockmoduleheading{Common.BibTypes}
+\label{module:Common.BibTypes}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Common.BibTypes (
+    BibTex(BibTex),  Entry(Entry, entryType, reference, fields),  Field(Field), 
+    getKey,  getValue,  maybegetKey,  maybegetValue,  EntryType,  Reference, 
+    BibTexAlgebra,  foldBibTex,  lookupField,  compareF
+  ) where\end{verbatim}}
+\haddockendheader
+
+The decision has been made to represent a BibTeX file as a list of entries, along with possibly some preamble. 
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ BibTex
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{BibTex [String] [Entry]} & \\
+\end{tabulary}\par
+a bibtex file is just a list of entries, with a list of preamble-strings
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Show\ BibTex\\instance\ Tree\ BibTex
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ Entry
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{Entry} & \\
+                    \haddockdecltt{entryType :: EntryType} & book, thesis, etc.
+
+                    \haddockdecltt{reference :: Reference} & the name 
+
+                    \haddockdecltt{fields :: [Field]} & a list of key/value pairs
+
+\end{tabulary}\par
+a bibtex entry has a type, a reference (it's name), and a list of fields
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Eq\ Entry
+\end{tabular}]\haddockbegindoc
+We implement equality on entries. When their names are the same, we consider them equal.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Show\ Entry\\instance\ Tree\ Entry
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ Field
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{Field String String} & \\
+\end{tabulary}\par
+a field is an attibute/value pair
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Eq\ Field
+\end{tabular}]\haddockbegindoc
+Fields are considered equal when their keys are the same.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Ord\ Field\\instance\ Show\ Field\\instance\ Tree\ Field
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+getKey\ ::\ Field\ ->\ String
+\end{tabular}]\haddockbegindoc
+returns the key part, given a Field
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+getValue\ ::\ Field\ ->\ String
+\end{tabular}]\haddockbegindoc
+returns the value part, given a Field
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+maybegetKey\ ::\ Maybe\ Field\ ->\ Maybe\ String
+\end{tabular}]\haddockbegindoc
+sometimes we want to get the key from a Maybe Field. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+maybegetValue\ ::\ Maybe\ Field\ ->\ Maybe\ String
+\end{tabular}]\haddockbegindoc
+...and sometimes we want to get the value from a Maybe Field. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ EntryType\ =\ String
+\end{tabular}]\haddockbegindoc
+the entry type is characterised by a string, for example \haddocktt{book}
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ Reference\ =\ String
+\end{tabular}]\haddockbegindoc
+the reference is also just a string, such as \haddocktt{pierce02}
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ BibTexAlgebra\ bibtex\ preamble\ entry\ =\ ({\char 91}preamble{\char 93}\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ {\char 91}entry{\char 93}\ ->\ bibtex,\ String\ ->\ preamble,\ EntryType\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ Reference\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ {\char 91}Field{\char 93}\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ entry)
+\end{tabular}]\haddockbegindoc
+the type of the bibtex algebra. Used to fold over a bibtex library,
+ like when we want to convert a BibTeX structure into HTML. 
+\par
+This seems the most natural way to define possible conversions from BibTex to 
+ other (possibly tree-like) formats, such as Html later on. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+foldBibTex\ ::\ BibTexAlgebra\ bibtex\ preamble\ entry\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ BibTex\ ->\ bibtex
+\end{tabular}]\haddockbegindoc
+How to fold over a BibTeX tree. Used when converting to Html in Bib2HTML.Tool.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+lookupField\ ::\ String\ ->\ {\char 91}Field{\char 93}\ ->\ Maybe\ Field
+\end{tabular}]\haddockbegindoc
+Given a key, find the corresponding Field in a list of Fields. If it can't be found, Nothing is returned. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+compareF\ ::\ Field\ ->\ Field\ ->\ Ordering
+\end{tabular}]\haddockbegindoc
+Our implementation of ordering on Fields. This is how we make sure
+ that author, then title, then the other fields, and finally year, are 
+ displayed, regardless of how they are placed in the .bib file. This implementation
+ allows us to simply run \haddocktt{sort} on a list of Fields. 
+\par
+
+\end{haddockdesc}

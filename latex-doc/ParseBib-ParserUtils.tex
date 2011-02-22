@@ -1,0 +1,65 @@
+\haddockmoduleheading{ParseBib.ParserUtils}
+\label{module:ParseBib.ParserUtils}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module ParseBib.ParserUtils (
+    parseFeedback,  pMunch1,  pBraced,  spaces
+  ) where\end{verbatim}}
+\haddockendheader
+
+This module contains some useful parsing utilities.
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+parseFeedback
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{Parser BibTex} & the parser to use
+ \\
+                                                     \haddockdecltt{->} & \haddockdecltt{String} & the input
+ \\
+                                                                                                   \haddockdecltt{->} & \haddockdecltt{Feedback BibTex} & return a BibTex, but also allow Feedback
+ \\
+\end{tabulary}\par
+Parse a given input using some UU-Parsinglib parser, but
+ return feedback in the CCO Feedback monad. Useful for reporting
+ failures and error corrections done by the parser.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+pMunch1
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{(Provides st (a
+                                                  -> Bool, [Char], Char) a, Provides st (Munch a) [a])} \\
+                     \haddockdecltt{=>} & \haddockdecltt{(a
+                                                          -> Bool)} & munch all text matching this predicate
+ \\
+                                                                      \haddockdecltt{->} & \haddockdecltt{P st [a]} & \\
+\end{tabulary}\par
+the pMunch1 parser is much like pMunch, except that it only 
+ succeeds when it can munch 1 or more characters. It fails on 
+ the empty string. 
+ Inspired by the library function pMunch, from UU-Parsinglib.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+pBraced\ ::\ Parser\ a\ ->\ Parser\ a
+\end{tabular}]\haddockbegindoc
+Parser for parsing anything contained in braces. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+spaces\ ::\ Parser\ String
+\end{tabular}]\haddockbegindoc
+A parser which greedily consumes whitespace. Useful between entries or fields. 
+\par
+
+\end{haddockdesc}

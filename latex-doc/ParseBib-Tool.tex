@@ -1,0 +1,59 @@
+\haddockmoduleheading{ParseBib.Tool}
+\label{module:ParseBib.Tool}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module ParseBib.Tool (
+    mainFunc,  pipeline,  removeComments,  killComments,  bibTexparser, 
+    bibTex2Aterm
+  ) where\end{verbatim}}
+\haddockendheader
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+mainFunc\ ::\ IO\ ()
+\end{tabular}]\haddockbegindoc
+wrap the pipeline in IO and run.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+pipeline\ ::\ Component\ String\ String
+\end{tabular}]\haddockbegindoc
+the pipeline which carries out the aforementioned steps. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+removeComments\ ::\ Component\ String\ String
+\end{tabular}]\haddockbegindoc
+removeComments splits the input into lines, then processes each line
+ for comments using the killComments function
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+killComments\ ::\ String\ ->\ String
+\end{tabular}]\haddockbegindoc
+killComments throws away everything after a \haddocktt{{\char '45}} on a line of input.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+bibTexparser\ ::\ Component\ String\ BibTex
+\end{tabular}]\haddockbegindoc
+run the parser, parseBib, on the input, using the parseFeedback wrapper.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+bibTex2Aterm\ ::\ Component\ BibTex\ ATerm
+\end{tabular}]\haddockbegindoc
+convert the parsed BibTex tree into an ATerm.
+\par
+
+\end{haddockdesc}

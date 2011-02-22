@@ -1,0 +1,131 @@
+\haddockmoduleheading{Common.HtmlTypes}
+\label{module:Common.HtmlTypes}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Common.HtmlTypes (
+    Html(Html),  Head(Head),  Body,  BlockElem(A, Hr, Table, P),  Tr(Tr),  Td, 
+    Title,  HtmlAlgebra,  foldHtml
+  ) where\end{verbatim}}
+\haddockendheader
+
+This module contains our representation of an HTML document. Our 
+ simplistic version of HTML only knows anchors, horizontal rules, tables and paragraphs, 
+ but this is enough to display a BibTeX database. 
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ Html
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{Html Head Body} & \\
+\end{tabulary}\par
+an HTML document has a head and a body
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Show\ Html\\instance\ Tree\ Html
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ Head
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{Head Title} & \\
+\end{tabulary}\par
+the head only contains the title.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Show\ Head\\instance\ Tree\ Head
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ Body\ =\ {\char 91}BlockElem{\char 93}
+\end{tabular}]\haddockbegindoc
+the body of an HTML document is a list of block elements (table, anchor, etc.)
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ BlockElem
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{A [Field] Reference} & \\
+\haddockdecltt{|} & \haddockdecltt{Hr} & \\
+\haddockdecltt{|} & \haddockdecltt{Table [Field] [Tr]} & \\
+\haddockdecltt{|} & \haddockdecltt{P [Field] String} & \\
+\end{tabulary}\par
+a block element can be (as stated) anchor, rule, table or a paragraph (a paragraph
+ is also used to represent a plain string. In this case it's attribute list is empty, 
+ and when rendering, the p-tag is ommitted.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Show\ BlockElem\\instance\ Tree\ BlockElem
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+data\ Tr
+\end{tabular}]\haddockbegindoc
+\haddockbeginconstrs
+\haddockdecltt{=} & \haddockdecltt{Tr [Field] [Td]} & \\
+\end{tabulary}\par
+a table row. It has attributes and a list of cells
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+instance\ Show\ Tr\\instance\ Tree\ Tr
+\end{tabular}]
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ Td\ =\ BlockElem
+\end{tabular}]\haddockbegindoc
+a table cell is a block element
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ Title\ =\ String
+\end{tabular}]\haddockbegindoc
+the title of a document is simply a string. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ HtmlAlgebra\ html\ head\ body\ block\ tr\ =\ (head\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ body\ ->\ html,\ (Title\ ->\ head,\ {\char 91}block{\char 93}\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ body),\ ({\char 91}Field{\char 93}\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ Reference\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ block,\ block,\ {\char 91}Field{\char 93}\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ {\char 91}tr{\char 93}\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ block,\ {\char 91}Field{\char 93}\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ String\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ block),\ {\char 91}Field{\char 93}\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ {\char 91}block{\char 93}\\\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ->\ tr)
+\end{tabular}]\haddockbegindoc
+And once again we define an algebra for folding over an HTML document.
+ This will prove useful when we want to pretty-print the html (or render
+ it in any form), since the above type is only an abstract representation of 
+ an HTML document.
+\par
+Since Html is tree-like, it seems logical to use a fold to convert it to some other
+ (tree-like) format, in our case, this is Doc, the CCO pretty-print data structure. The actual
+ fold for this is defined in PrettyPrintHTML.Tool. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+foldHtml\ ::\ HtmlAlgebra\ html\ head\ body\ block\ tr\ ->\ Html\ ->\ html
+\end{tabular}]\haddockbegindoc
+The function which folds over an HTML tree, given an algebra as defined above.
+\par
+
+\end{haddockdesc}

@@ -1,0 +1,85 @@
+\haddockmoduleheading{ParseBib.Parser}
+\label{module:ParseBib.Parser}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module ParseBib.Parser (
+    parseBib,  parseBibEntry,  pType,  pReference,  pBibEntryBody,  pBibKey, 
+    parsePreamble,  pKeyValue
+  ) where\end{verbatim}}
+\haddockendheader
+
+This module implements the parse-bib tool. It uses the UU-Parsinglib parser combinators
+ to allow for a forgiving, self-correcting Bib-parser. It is also quite readable, thanks to the advanced
+ library used. 
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+parseBib\ ::\ Parser\ BibTex
+\end{tabular}]\haddockbegindoc
+the top-level parser. Describes the grammar of a BibTex file, 
+ namely 0 or more preamble keywords, and 1 or more bibtex entries. the definitions
+ here closely resemble the grammar, so it's easy to see what a file should look like, 
+ by inspecting the parser functions. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+parseBibEntry\ ::\ Parser\ Entry
+\end{tabular}]\haddockbegindoc
+Grammar for a bib entry. An entry has a type, a name, and a body. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+pType\ ::\ Parser\ String
+\end{tabular}]\haddockbegindoc
+A type of a bib entry is just a string of a-z, preceded by the '@' symbol. 
+ Don't return the at-symbol, though.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+pReference\ ::\ Parser\ String
+\end{tabular}]\haddockbegindoc
+Parse the name of the bib entry. Cheat by consuming the first opening brace as well.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+pBibEntryBody\ ::\ Parser\ {\char 91}Field{\char 93}
+\end{tabular}]\haddockbegindoc
+The body of a bib entry is a list of fields, separated by a comma and spaces. Finally consume 
+ the closing brace when done. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+pBibKey\ ::\ Parser\ String
+\end{tabular}]\haddockbegindoc
+a bib key (its reference) is a word containing {\char 91}A-Za-z0-9{\char 93}. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+parsePreamble\ ::\ Parser\ String
+\end{tabular}]\haddockbegindoc
+A parser for the preamble keywords. This is just a string preceded by \haddocktt{preamble\ and\ surrounded\ by\ braces\ and\ quotation\ marks.\ Unfortunately\ no\ support\ for\ }string variables yet. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+pKeyValue\ ::\ Parser\ Field
+\end{tabular}]\haddockbegindoc
+A key-value parser. A key is a word, followed by =, and the value is surrounded by quotation marks;
+ if, however, the value is numeric, the quotation marks aren't required. 
+\par
+
+\end{haddockdesc}
