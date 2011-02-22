@@ -6,6 +6,7 @@ module Main where
     import Common.BibTypes
     import Common.HtmlTypes
     import Common.TreeInstances
+    import Common.AllowedFields
     import Common.ATermUtils
     import Control.Arrow
     import Data.List (intersperse,nub,group,sortBy,sort)
@@ -34,6 +35,9 @@ module Main where
                             let ref = reference e
                             let fs = fields e
                             trace_ ("Checking entry ["++ref++"]...")
+                            case lookup entrytype allowedTable of
+                                Nothing -> warn_ ("Entry type \"" ++ entrytype ++ "\" doesn't exist!")
+                                Just _  -> return ()
                             return e
                  )
 
@@ -62,10 +66,10 @@ module Main where
                                                            do let grouped = map (\xs@(x:_) -> (x, length xs)) . group . sort $ references
                                                               let filtered = filter (\(_,c)-> c>1) grouped 
                                                               let dups = concatMap ((\a-> " > "++a++"\n").fst) filtered
-                                                       	      fail ("ERROR: The following duplicate keys were found:\n" ++ dups)
+                                                       	      warn_ ("WARNING: The following duplicate keys were found (and ignored):\n" ++ dups)
                                                          else 
-                                                       	   trace_ "OK, no duplicates."
-                                                       return inp)
+                                                       	    trace_ "OK, no duplicates."
+                                                       return $ BibTex (nub entries))
   
     bibTex2HTML :: Component BibTex Html
     bibTex2HTML = component (\inp -> do trace_ "Converting BibTeX to HTML..."
