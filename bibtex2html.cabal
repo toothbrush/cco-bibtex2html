@@ -29,12 +29,12 @@ Library
 Executable pp-html
     Main-is:         Main.hs
     Build-depends:   uu-parsinglib>=2.5.6.1,base >= 3 && < 5,cco>=0.0.4,ffi,rts,ansi-terminal
-    hs-source-dirs:  pp-html-src
+    hs-source-dirs:  pp-html-src,.
 Executable bib2html
     Main-is:         Main.hs
     Build-depends:   uu-parsinglib>=2.5.6.1,base >= 3 && < 5,cco>=0.0.4,ffi,rts,ansi-terminal
-    hs-source-dirs:  bib2html-src
+    hs-source-dirs:  bib2html-src,.
 Executable parse-bib
     Main-is:         Main.hs
     Build-depends:   uu-parsinglib>=2.5.6.1,base >= 3 && < 5,cco>=0.0.4,ffi,rts,ansi-terminal,haskell98
-    hs-source-dirs:  parse-bib-src
+    hs-source-dirs:  parse-bib-src,.
