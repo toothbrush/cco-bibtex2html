@@ -30,8 +30,11 @@ module Main where
                                 )
 
     checkEntry :: Entry -> Feedback Entry
-    checkEntry = (\e -> do warn_ "test"
-                           return e
+    checkEntry = (\e -> do  let entrytype = entryType e
+                            let ref = reference e
+                            let fs = fields e
+                            trace_ ("Checking entry ["++ref++"]...")
+                            return e
                  )
 
     sorter :: Component BibTex BibTex
@@ -59,7 +62,7 @@ module Main where
                                                            do let grouped = map (\xs@(x:_) -> (x, length xs)) . group . sort $ references
                                                               let filtered = filter (\(_,c)-> c>1) grouped 
                                                               let dups = concatMap ((\a-> " > "++a++"\n").fst) filtered
-                                                       	      warn_ ("The following duplicate keys were found:\n" ++ dups)
+                                                       	      fail ("ERROR: The following duplicate keys were found:\n" ++ dups)
                                                          else 
                                                        	   trace_ "OK, no duplicates."
                                                        return inp)

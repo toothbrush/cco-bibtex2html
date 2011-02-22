@@ -38,11 +38,11 @@ module Common.TreeInstances where
         fromTree Hr               = App "hr"     []  
         fromTree (Table attr tr)  = App "table"  [List $ map fromTree attr, List $ map fromTree tr] 
         fromTree (P attr str)     = App "p"      [List $ map fromTree attr, fromTree str]
-        toTree = parseTree  [app "a"      (A   <$> arg <*> arg)
-                            ,app "hr"     (pure Hr) 
-                            ,app "table"  (Table <$> arg <*> arg)
-                            ,app "p"      (P <$> arg <*> arg)
-                            ]   
+        toTree                    = parseTree  [ app "a"      (A   <$> arg <*> arg)
+                                               , app "hr"     (pure Hr) 
+                                               , app "table"  (Table <$> arg <*> arg)
+                                               , app "p"      (P <$> arg <*> arg)
+                                               ]   
 
     instance Tree Tr where
         fromTree (Tr attr td) = App "tr" [List $ map fromTree attr, List $ map fromTree td] 
