@@ -1,7 +1,12 @@
+-- | This file is a place to store a table containing allowed BibTeX entry types,
+-- and the required and optional fields for each. 
+-- Adapted from <http://en.wikipedia.org/wiki/BibTeX>
 module Common.AllowedFields where
     
-    -- from http://en.wikipedia.org/wiki/BibTeX
+    import Common.BibTypes
 
+    -- | a table containing all the allowed BibTeX types and their attributes
+    allowedTable :: [FieldTable]
     allowedTable = [ keysArticle
                    , keysBook
                    , keysBooklet
@@ -17,6 +22,16 @@ module Common.AllowedFields where
                    , keysTechreport
                    , keysUnpublished
                    ]
+
+    -- | An entry mapping from the BibTeX entry type to the list of required and optional keys
+    type FieldTable = (EntryType, ([RequiredKey], [OptionalKey]))
+    -- | A required key is simply defined by the string-representation of it's attribute name.
+    type RequiredKey = String
+    -- | Like required keys, optional keys are strings.
+    type OptionalKey = String
+
+    -- | as an example, the @article type requires [author,title,journal,year], the rest of the keys mentioned are optional.
+    keysArticle,keysBook,keysBooklet,keysConference,keysInbook,keysIncollection,keysInproceedings,keysManual,keysMastersthesis,keysMisc,keysPhdthesis,keysProceedings,keysTechreport,keysUnpublished :: FieldTable
 
     keysArticle       = ("article",
                         (["author","title","journal","year"],

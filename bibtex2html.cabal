@@ -4,8 +4,18 @@ Synopsis:            Convert a BibTeX database into pretty HTML
 Description:         This package contains 3 tools for converting BibTex files into an HTML format. The
                      3 tools are parse-bib, bib2html, and pp-html, which will typically be used in a pipeline
                      fashion. Parse-bib creates an abstract syntax tree, bib2html converts this into an abstract HTML 
-                     representation, also doing error-checking, and pp-html pretty-prints this HTML abstract
-                     syntax tree.
+                     representation, also doing the main error-checking and validation, and pp-html pretty-prints 
+                     this HTML abstract syntax tree.
+                     .
+                     The documentation is laid out in a literate programming style, i.e. the documentation is placed
+                     next to each piece of code it refers to. This page is the main documentation page, and from here
+                     one can navigate to different sections. 
+                     .
+                     The Common module contains code which is relevant to each of the 3 tools, such as the data structures
+                     representing an abstract tree of BibTeX or HTML, or algebras to fold over these structures.
+                     .
+                     The other 3 sections correspond to the 3 tools, where PrettyPrintHTML contains the code resulting in
+                     pp-html, AbstractBib2HTML contains the code for bib2html, and ParseBib contains the code for parse-bib. 
 License:             GPL-3
 License-file:        LICENSE
 Category:            Typesetting
