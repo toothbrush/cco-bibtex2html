@@ -5,6 +5,7 @@ parse-bib: force_look
 
 clean:
 	-rm *.hi *.o
+	-rm parse-bib
 
 force_look:
 	true

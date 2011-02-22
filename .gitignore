@@ -2,3 +2,6 @@ parsedbib.aterm
 *.hi
 *.o
 dist
+bib2html
+parse-bib
+pp-html

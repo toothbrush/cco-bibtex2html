@@ -5,6 +5,7 @@ bib2html: force_look
 
 clean:
 	-rm *.hi *.o
+	-rm bib2html
 
 force_look:
 	true

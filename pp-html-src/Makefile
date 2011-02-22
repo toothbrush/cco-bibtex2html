@@ -5,6 +5,7 @@ pp-html: force_look
 
 clean:
 	-rm *.hi *.o
+	-rm pp-html
 
 force_look:
 	true
