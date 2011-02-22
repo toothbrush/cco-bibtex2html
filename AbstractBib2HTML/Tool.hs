@@ -184,6 +184,7 @@ module AbstractBib2HTML.Tool where
                         | field == "title"      = "<em>"++value++"</em>, "
                         | field == "pages"      = "pages "++value++". "
                         | field == "year"       = value++". "
+                        | field == "url"        = "<a href=\""++value++"\">"++value++"</a>, "
                         | field == "editor"     = "In: "++value++", editors, "
                         | otherwise             = value++", "
   
