@@ -42,7 +42,10 @@ module Main where
                             let ref = reference e
                             let fs = fields e
                             trace_ ("Sorting fields for entry ["++ref++"]...")
-                            return (Entry entrytype ref (sort fs))
+                            if (length fs /= length (nub fs)) 
+                            	then warn_ "WARNING: Duplicate field definitions found!"
+                            	else return ()
+                            return (Entry entrytype ref (sort (nub fs)))
                  )
 
     checkOptionals :: Entry -> Feedback Entry
@@ -66,7 +69,7 @@ module Main where
                             let fs = fields e
                             trace_ ("Checking entry ["++ref++"] for required fields...")
                             case lookup entrytype allowedTable of
-                                Nothing         -> do warn_ ("Entry type \"" ++ entrytype ++ "\" doesn't exist, entry ommitted!")
+                                Nothing         -> do warn_ ("WARNING: Entry type \"" ++ entrytype ++ "\" doesn't exist, entry ommitted!")
                                                       return (Entry "" "" [])
                                 Just (req,opt)  -> do let filledIn = map getKey fs
                                                       let reqFieldsExistence = map (\i -> (flip elem filledIn i, i)) req

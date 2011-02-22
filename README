@@ -53,4 +53,34 @@ so don't be surprised if it's not finished after 5 seconds.
 
 -------------------------------------------------------------------------------------------
 
-FOR THE PATIENT (
+FOR THE PATIENT (or the more curious)
+
+Features
+
+This implementation of BibTeX2HTML is not comprehensive, i.e. there are some aspects of 
+the BibTeX DSL that aren't handled yet, but it provides a very reasonable subset of the 
+BibTeX features, and the author believes that it is useful for most mainstream databases.
+The most notable features are listed below.
+
+* Warns about unknown fields, and hides these
+* Checks that required fields are filled in
+* Forgiving parsing, thanks to use of UU-Parsinglib
+* Supports year-field without quotes
+* Support for the @preamble construct
+* Automatic sorting of fields within entries, and entries themselves
+* Checks for duplicate keys (and only displays first definition)
+* Allows for comments (% ...), both after code and on their own line
+* Filters duplicate fields in entries (i.e. "author" defined twice)
+
+In a future version, possibilities for improvement include:
+
+* Support for escaping characters
+* Automatic formatting of authors' names
+* Nicer hyperlinks (i.e. Johnson 2002 -> [J02])
+* Support for variables (@string) 
+
+
+
+Requirements:
+
+Documentation:
