@@ -1,3 +1,51 @@
-Paul van der Walt
+README file for the 1st assignment of Compiler Construction
 
-First assignment
+BibTeX2HTML
+
+23 February, 2011
+
+Author: Paul van der Walt (3120805)
+
+------------------------------------------------------------------------------------------
+
+FOR THE RUSHED
+
+$ tar xvvzf bibtex2html-0.1.tar.gz
+$ cd bibtex2html-0.1/
+$ cabal configure
+$ cabal build
+$ cabal install
+$ cat exampleX.bib | parse-bib | bib2html | pp-html > output.html
+$ open output.html
+
+------------------------------------------------------------------------------------------
+
+FOR THE IMPATIENT
+
+To get started, unpack this tarball (evidently this was successful if you're reading
+this), and run:
+
+$ cabal configure
+$ cabal build
+
+and optionally 
+
+$ cabal install # this is so you can run the commands directly, 
+                # without invocations like `dist/build/parse-bib/parse-bib`. 
+
+For documentation:
+
+$ cabal haddock
+
+Documentation gets placed in dist/doc/html/bibtex2html/index.html (this is a good starting
+point). To try out the various examples, assuming you have run `cabal install`, try 
+the following:
+
+$ cat exampleX.bib | parse-bib | bib2html | pp-html > output.html
+
+and open the generated file, output.html, in a web browser. This process may take a while, 
+so don't be surprised if it's not finished after 5 seconds. 
+
+-------------------------------------------------------------------------------------------
+
+FOR THE PATIENT (
