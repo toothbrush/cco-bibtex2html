@@ -48,7 +48,6 @@ module Main where
                                                       if null missings 
                                                       	  then return e
                                                           else fail ("ERROR: required fields not found: \n"++(concatMap (\i -> " > "++i++"\n") missings))
-                                                      return e
                  )
 
     sorter :: Component BibTex BibTex
