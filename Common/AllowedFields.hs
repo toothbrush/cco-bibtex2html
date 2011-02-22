@@ -30,7 +30,7 @@ module Common.AllowedFields where
     -- | Like required keys, optional keys are strings.
     type OptionalKey = String
 
-    -- | as an example, the @article type requires [author,title,journal,year], the rest of the keys mentioned are optional.
+    -- as an example, the @article type requires [author,title,journal,year], the rest of the keys mentioned are optional.
     keysArticle,keysBook,keysBooklet,keysConference,keysInbook,keysIncollection,keysInproceedings,keysManual,keysMastersthesis,keysMisc,keysPhdthesis,keysProceedings,keysTechreport,keysUnpublished :: FieldTable
 
     keysArticle       = ("article",
