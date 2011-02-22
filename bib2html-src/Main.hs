@@ -8,14 +8,15 @@ module Main where
     import Common.TreeInstances
     import Common.ATermUtils
     import Control.Arrow
-    import Data.List (intersperse)
+    import Data.List (intersperse,nub,group,sort)
     
     main :: IO ()
     main = ioWrap pipeline
    
     pipeline :: Component String String
     pipeline =  parser        >>> 
-                aTerm2BibTex  >>> {-
+                aTerm2BibTex  >>> 
+                checkDups     >>> {-
                 validator     >>>   
                 sorter        >>> -}
                 bibTex2HTML   >>>   
@@ -23,6 +24,17 @@ module Main where
                 aTerm2String
    
 
+    checkDups :: Component BibTex BibTex
+    checkDups = component (\inp@(BibTex entries) -> do trace_ "Checking for duplicate entry identifiers..."
+                                                       let references = map reference entries 
+                                                       if (length references /= (length$nub references)) then
+                                                           do let grouped = map (\xs@(x:_) -> (x, length xs)) . group . sort $ references
+                                                              let filtered = filter (\(_,c)-> c>1) grouped 
+                                                              let dups = concatMap ((\a-> " > "++a++"\n").fst) filtered
+                                                       	      warn_ ("The following duplicate keys were found:\n" ++ dups)
+                                                         else 
+                                                       	   trace_ "OK, no duplicates."
+                                                       return inp)
   
     bibTex2HTML :: Component BibTex Html
     bibTex2HTML = component (\inp -> do trace_ "Converting BibTeX to HTML..."
