@@ -40,9 +40,15 @@ module Main where
                             let fs = fields e
                             trace_ ("Checking entry ["++ref++"]...")
                             case lookup entrytype allowedTable of
-                                Nothing -> do warn_ ("Entry type \"" ++ entrytype ++ "\" doesn't exist, entry ommitted!")
-                                              return (Entry "" "" [])
-                                Just _  -> return e
+                                Nothing         -> do warn_ ("Entry type \"" ++ entrytype ++ "\" doesn't exist, entry ommitted!")
+                                                      return (Entry "" "" [])
+                                Just (req,opt)  -> do let filledIn = map getKey fs
+                                                      let reqFieldsExistence = map (\i -> (flip elem filledIn i, i)) req
+                                                      let missings = map snd $ filter (not.fst) reqFieldsExistence
+                                                      if null missings 
+                                                      	  then return e
+                                                          else fail ("ERROR: required fields not found: \n"++(concatMap (\i -> " > "++i++"\n") missings))
+                                                      return e
                  )
 
     sorter :: Component BibTex BibTex

@@ -15,6 +15,12 @@ module Common.BibTypes where
     data Field = Field String String -- Name and contents of field
                  deriving Show
 
+    getKey :: Field -> String
+    getKey (Field k _) = k
+
+    getValue :: Field -> String
+    getValue (Field _ v) = v
+
     type EntryType = String
     type Reference = String
 
