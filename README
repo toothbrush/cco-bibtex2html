@@ -43,6 +43,11 @@ the following:
 
 $ cat exampleX.bib | parse-bib | bib2html | pp-html > output.html
 
+or if you'd rather not install:
+
+$ cat exampleX.bib | dist/build/parse-bib/parse-bib | dist/build/bib2html/bib2html \
+      | dist/build/pp-html/pp-html > output.html
+
 and open the generated file, output.html, in a web browser. This process may take a while, 
 so don't be surprised if it's not finished after 5 seconds. 
 

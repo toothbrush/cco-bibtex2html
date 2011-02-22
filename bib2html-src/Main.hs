@@ -42,7 +42,6 @@ module Main where
                             let ref = reference e
                             let fs = fields e
                             trace_ ("Sorting fields for entry ["++ref++"]...")
-                            trace_ (show (sort fs))
                             return (Entry entrytype ref (sort fs))
                  )
 
@@ -104,7 +103,7 @@ module Main where
                                                                  let dups = concatMap ((\a-> " > "++a++"\n").fst) filtered
                                                                  warn_ ("WARNING: The following duplicate keys were found (and ignored):\n" ++ dups)
                                                             else 
-                                                               trace_ "OK, no duplicates."
+                                                               return ()
                                                           return (BibTex pa (nub entries))
                                                           )
   
