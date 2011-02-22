@@ -7,8 +7,8 @@ module Common.TreeInstances where
     import Control.Applicative
 
     instance Tree BibTex where
-        fromTree (BibTex l) = App "BibTex" [List (map fromTree l)]
-        toTree = parseTree [app "BibTex" (BibTex <$> arg)]
+        fromTree (BibTex p l) = App "BibTex" [List (map fromTree p), List (map fromTree l)]
+        toTree = parseTree [app "BibTex" (BibTex <$> arg <*> arg)]
 
     instance Tree Entry where
         fromTree e = App "Entry" [ fromTree $ entryType e         -- type

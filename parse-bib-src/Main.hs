@@ -25,7 +25,6 @@ module Main where
     removeComments :: Component String String
     removeComments = component $ (\inp -> do let splitfile = lines inp
                                              let rawFile = map killComments splitfile
-                                             trace_ (show rawFile)
                                              return $ unlines rawFile
                                  )
 

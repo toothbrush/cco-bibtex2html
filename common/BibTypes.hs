@@ -1,7 +1,7 @@
 module Common.BibTypes where
 
     -- a bibtex file is just a list of entries:
-    data BibTex = BibTex [Entry]
+    data BibTex = BibTex [String] [Entry]
                   deriving Show
 
     -- a bibtex entry:
@@ -25,14 +25,15 @@ module Common.BibTypes where
     type Reference = String
 
     -- the type of the bibtex algebra. Used to fold over a bibtex library
-    type BibTexAlgebra bibtex entry = ([entry] -> bibtex, 
-                                       EntryType -> Reference -> [Field] -> entry)
+    type BibTexAlgebra bibtex preamble entry = ([preamble] -> [entry] -> bibtex, 
+                                                String -> preamble,
+                                                EntryType -> Reference -> [Field] -> entry)
 
     -- the fold function
-    foldBibTex :: BibTexAlgebra bibtex entry -> BibTex -> bibtex
-    foldBibTex (bib, entry) = fBibTex where
-       fBibTex (BibTex lentries)     =  bib $ map fEntry lentries
-       fEntry  (Entry spec ref attr) =  entry spec ref attr
+    foldBibTex :: BibTexAlgebra bibtex preamble entry -> BibTex -> bibtex
+    foldBibTex (bib, pa, entry) = fBibTex where
+       fBibTex (BibTex preamble lentries) = bib (map pa preamble) (map fEntry lentries)
+       fEntry  (Entry spec ref attr)      = entry spec ref attr
     
     instance Eq Entry where
         (==) e1 e2 = reference e1 == reference e2

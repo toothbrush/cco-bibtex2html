@@ -9,7 +9,8 @@ module Parser where
     import Common.BibTypes
     import Char (isDigit)
 
-    parseBib = BibTex `pMerge` (pMany parseBibEntry)
+    parseBib = BibTex `pMerge` (pSome parsePreamble
+                        <||>    pMany parseBibEntry)
 
     parseBibEntry = Entry `pMerge` (pOne pType
                             <||>    pOne pReference
@@ -24,6 +25,8 @@ module Parser where
     pBibKey  = pMunch (flip elem (['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9']))
 
     pReference = pSym '{' *> pBibKey <* pToken "," <* spaces
+
+    parsePreamble = pToken "@preamble" *> spaces *> pSym '{' *> spaces *> pSym '"' *> pMunch (/= '"') <* pSym '"' <* spaces <* pSym '}' <* spaces
 
     pType :: Parser String
     pType = (pSym '@' *> pMunch1 (flip elem ['a'..'z']))

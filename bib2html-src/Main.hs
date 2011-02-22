@@ -26,11 +26,11 @@ module Main where
                 aTerm2String
    
     checkRequired :: Component BibTex BibTex
-    checkRequired = component $ (\(BibTex es) -> do trace_ "Checking required and optional fields..."
-                                                    checkedEntries <- mapM checkEntry es
-                                                    let nonempties =  filter empty checkedEntries
-                                                    checkedOptionals <- mapM checkOptionals nonempties
-                                                    return (BibTex checkedOptionals)
+    checkRequired = component $ (\(BibTex pa es) -> do trace_ "Checking required and optional fields..."
+                                                       checkedEntries <- mapM checkEntry es
+                                                       let nonempties =  filter empty checkedEntries
+                                                       checkedOptionals <- mapM checkOptionals nonempties
+                                                       return (BibTex pa checkedOptionals)
                                 )
 
     empty :: Entry -> Bool
@@ -46,10 +46,9 @@ module Main where
                                 let optFieldsExistence = map (\i -> (flip elem (opt++req) i, i)) filledIn
                                 let missings = map snd $ filter (not.fst) optFieldsExistence
                                 if null missings 
-                                	then return e
+                                    then return e
                                     else do warn_ ("WARNING: nonexistent field(s) found and ignored: \n"++(concatMap (\i -> " > "++i++"\n") missings))
-                                    	    warn_ (show (fs\\(map (\str -> Field str "") missings)))
-                                    	    return (Entry entrytype ref (fs\\(map (\str -> Field str "") missings)))
+                                            return (Entry entrytype ref (fs\\(map (\str -> Field str "") missings)))
                  )
 
     checkEntry :: Entry -> Feedback Entry
@@ -64,21 +63,21 @@ module Main where
                                                       let reqFieldsExistence = map (\i -> (flip elem filledIn i, i)) req
                                                       let missings = map snd $ filter (not.fst) reqFieldsExistence
                                                       if null missings 
-                                                      	  then return e
+                                                        then return e
                                                           else fail ("ERROR: required fields not found: \n"++(concatMap (\i -> " > "++i++"\n") missings))
                  )
 
     sorter :: Component BibTex BibTex
-    sorter = component $ (\(BibTex entries) -> do trace_ "Sorting bibliography..."
-                                                  return (BibTex (
-                                                        (sortBy (sortGen "author")
-                                                            (sortBy (sortGen "year")
-                                                                (sortBy (sortGen "title") 
-                                                                    entries
-                                                                ) 
-                                                            )
-                                                        )
-                                                     )))
+    sorter = component $ (\(BibTex pa entries) -> do trace_ "Sorting bibliography..."
+                                                     return (BibTex pa (
+                                                           (sortBy (sortGen "author")
+                                                               (sortBy (sortGen "year")
+                                                                   (sortBy (sortGen "title") 
+                                                                       entries
+                                                                   ) 
+                                                               )
+                                                           )
+                                                        )))
 
     sortGen :: String -> Entry -> Entry -> Ordering
     sortGen key e1 e2 = compare v1 v2
@@ -87,28 +86,32 @@ module Main where
 
 
     checkDups :: Component BibTex BibTex
-    checkDups = component (\inp@(BibTex entries) -> do trace_ "Checking for duplicate entry identifiers..."
-                                                       let references = map reference entries 
-                                                       if (length references /= (length$nub references)) then
-                                                           do let grouped = map (\xs@(x:_) -> (x, length xs)) . group . sort $ references
-                                                              let filtered = filter (\(_,c)-> c>1) grouped 
-                                                              let dups = concatMap ((\a-> " > "++a++"\n").fst) filtered
-                                                       	      warn_ ("WARNING: The following duplicate keys were found (and ignored):\n" ++ dups)
-                                                         else 
-                                                       	    trace_ "OK, no duplicates."
-                                                       return $ BibTex (nub entries))
+    checkDups = component (\inp@(BibTex pa entries) -> do trace_ "Checking for duplicate entry identifiers..."
+                                                          let references = map reference entries 
+                                                          if (length references /= (length$nub references)) then
+                                                              do let grouped = map (\xs@(x:_) -> (x, length xs)) . group . sort $ references
+                                                                 let filtered = filter (\(_,c)-> c>1) grouped 
+                                                                 let dups = concatMap ((\a-> " > "++a++"\n").fst) filtered
+                                                                 warn_ ("WARNING: The following duplicate keys were found (and ignored):\n" ++ dups)
+                                                            else 
+                                                               trace_ "OK, no duplicates."
+                                                          return (BibTex pa (nub entries))
+                                                          )
   
     bibTex2HTML :: Component BibTex Html
     bibTex2HTML = component (\inp -> do trace_ "Converting BibTeX to HTML..."
                                         return $ foldBibTex bib2htmlAlg inp)
 
-    bib2htmlAlg :: BibTexAlgebra Html ([BlockElem],Tr)
-    bib2htmlAlg = (fBibTex,fEntry) where
-        fBibTex entries       =  let tableEntries = (snd . unzip) entries
+    bib2htmlAlg :: BibTexAlgebra Html BlockElem ([BlockElem],Tr)
+    bib2htmlAlg = (fBibTex, fPa, fEntry) where
+        fBibTex pa entries    =  let tableEntries = (snd . unzip) entries
                                      arefs        = (concat . fst . unzip) entries
                                  in  Html (Head "Bibliography") $ 
-                                     (separate arefs) ++ [Hr, Table [(Field "border" "0")] tableEntries]
+                                     (separate arefs) ++ preamble pa ++ [Hr, Table [(Field "border" "0")] tableEntries]
         fEntry spec ref attr  =  (generateIndex ref, generateTableRows spec ref attr)
+        fPa ss = P [] (ss)
+        preamble pa = if null pa then []
+                      else Hr : pa
 
     separate :: [BlockElem] -> [BlockElem]
     separate = intersperse (P [] "|")
