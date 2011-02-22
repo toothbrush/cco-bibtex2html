@@ -1,0 +1,38 @@
+\haddockmoduleheading{Common.ATermUtils}
+\label{module:Common.ATermUtils}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Common.ATermUtils (
+    aTerm2String,  aTerm2BibTex,  html2Aterm
+  ) where\end{verbatim}}
+\haddockendheader
+
+This module contains some generally useful functions for
+ manipulating ATerms
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+aTerm2String\ ::\ Component\ ATerm\ String
+\end{tabular}]\haddockbegindoc
+Render a given ATerm as a string. Used by all the tools that
+ need to output ATerms to the terminal.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+aTerm2BibTex\ ::\ Component\ ATerm\ BibTex
+\end{tabular}]\haddockbegindoc
+Parse an ATerm into a BibTex data structure. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+html2Aterm\ ::\ Component\ Html\ ATerm
+\end{tabular}]\haddockbegindoc
+This function takes an abstract HTML tree and converts is into an ATerm
+\par
+
+\end{haddockdesc}

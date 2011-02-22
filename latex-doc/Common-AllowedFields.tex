@@ -1,0 +1,94 @@
+\haddockmoduleheading{Common.AllowedFields}
+\label{module:Common.AllowedFields}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Common.AllowedFields (
+    allowedTable,  FieldTable,  RequiredKey,  OptionalKey,  keysBook, 
+    keysBooklet,  keysConference,  keysInbook,  keysIncollection, 
+    keysInproceedings,  keysManual,  keysMastersthesis,  keysMisc, 
+    keysPhdthesis,  keysProceedings,  keysTechreport,  keysUnpublished, 
+    keysArticle
+  ) where\end{verbatim}}
+\haddockendheader
+
+This file is a place to store a table containing allowed BibTeX entry types,
+ and the required and optional fields for each. 
+ Adapted from \url{http://en.wikipedia.org/wiki/BibTeX}
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+allowedTable\ ::\ {\char 91}FieldTable{\char 93}
+\end{tabular}]\haddockbegindoc
+a table containing all the allowed BibTeX types and their attributes
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ FieldTable\ =\ (EntryType,\ ({\char 91}RequiredKey{\char 93},\ {\char 91}OptionalKey{\char 93}))
+\end{tabular}]\haddockbegindoc
+An entry mapping from the BibTeX entry type to the list of required and optional keys
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ RequiredKey\ =\ String
+\end{tabular}]\haddockbegindoc
+A required key is simply defined by the string-representation of it's attribute name.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+type\ OptionalKey\ =\ String
+\end{tabular}]\haddockbegindoc
+Like required keys, optional keys are strings.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[
+keysBook\ ::\ FieldTable
+]
+\item[
+keysBooklet\ ::\ FieldTable
+]
+\item[
+keysConference\ ::\ FieldTable
+]
+\item[
+keysInbook\ ::\ FieldTable
+]
+\item[
+keysIncollection\ ::\ FieldTable
+]
+\item[
+keysInproceedings\ ::\ FieldTable
+]
+\item[
+keysManual\ ::\ FieldTable
+]
+\item[
+keysMastersthesis\ ::\ FieldTable
+]
+\item[
+keysMisc\ ::\ FieldTable
+]
+\item[
+keysPhdthesis\ ::\ FieldTable
+]
+\item[
+keysProceedings\ ::\ FieldTable
+]
+\item[
+keysTechreport\ ::\ FieldTable
+]
+\item[
+keysUnpublished\ ::\ FieldTable
+]
+\item[
+keysArticle\ ::\ FieldTable
+]
+\end{haddockdesc}

@@ -1,0 +1,172 @@
+\haddockmoduleheading{AbstractBib2HTML.Tool}
+\label{module:AbstractBib2HTML.Tool}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module AbstractBib2HTML.Tool (
+    mainFunc,  pipeline,  checkRequired,  empty,  sortFields,  checkOptionals, 
+    checkEntry,  sorter,  sortGen,  checkDups,  bibTex2HTML,  bib2htmlAlg, 
+    separate,  generateIndex,  generateTableRows,  flattenEntry,  formatFields
+  ) where\end{verbatim}}
+\haddockendheader
+
+this module implements the bib2html tool. It contains the complete pipeline for
+ this part of the suite, converting from a BibTex ATerm into an Html ATerm.
+ This is also where the main validation is done on the BibTeX database, to make sure that there
+ are no duplicates, etc. 
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+mainFunc\ ::\ IO\ ()
+\end{tabular}]\haddockbegindoc
+the default main function. Just wrap a pipeline in IO
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+pipeline\ ::\ Component\ String\ String
+\end{tabular}]\haddockbegindoc
+The pipeline for bib2html. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+checkRequired\ ::\ Component\ BibTex\ BibTex
+\end{tabular}]\haddockbegindoc
+checks a number of things. Make sure all required fields are in all entries, and that there are no fields 
+ which are unrecognised (such as misspelled fields). Also sorts the fields (author, title, the rest, finally year). Finally
+ checks that all the other fields are at least optional, since we don't want disallowed fields in entries. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+empty\ ::\ Entry\ ->\ Bool
+\end{tabular}]\haddockbegindoc
+this function returns whether a given entry has 0 fields. We don't want those. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+sortFields\ ::\ Entry\ ->\ Feedback\ Entry
+\end{tabular}]\haddockbegindoc
+Sort fields, and nub duplicates. Here we just need to call \haddockid{sort}, since
+ the Ord class is implemented on Fields.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+checkOptionals\ ::\ Entry\ ->\ Feedback\ Entry
+\end{tabular}]\haddockbegindoc
+Checks that all fields in an entry are at least optional. If they are not, issue a warning and empty them. These will later be pruned.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+checkEntry\ ::\ Entry\ ->\ Feedback\ Entry
+\end{tabular}]\haddockbegindoc
+Check that all required fields are present, depending on the entry's type. If they aren't issue an error and stop. This is the only 
+ condition on which the bib2html program fails. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+sorter\ ::\ Component\ BibTex\ BibTex
+\end{tabular}]\haddockbegindoc
+Sort entries by author, year, title. Makes use of the usual lexical sort on strings. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+sortGen
+\end{tabular}]\haddockbegindoc
+\haddockbeginargs
+\haddockdecltt{::} & \haddockdecltt{String} & the key to sort on
+ \\
+                                              \haddockdecltt{->} & \haddockdecltt{Entry} & entry 1
+ \\
+                                                                                           \haddockdecltt{->} & \haddockdecltt{Entry} & entry 2
+ \\
+                                                                                                                                        \haddockdecltt{->} & \haddockdecltt{Ordering} & \\
+\end{tabulary}\par
+helper function which compares two entries and returns an ordering, based on the key requested.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+checkDups\ ::\ Component\ BibTex\ BibTex
+\end{tabular}]\haddockbegindoc
+This function eliminates entries with the same name. The first found entry with a certain name is retained. 
+ A warning is also issued. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+bibTex2HTML\ ::\ Component\ BibTex\ Html
+\end{tabular}]\haddockbegindoc
+Convert a BibTex tree to Html by folding with the bib2htmlAlg algebra.
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+bib2htmlAlg\ ::\ BibTexAlgebra\ Html\ BlockElem\ ({\char 91}BlockElem{\char 93},\ Tr)
+\end{tabular}]\haddockbegindoc
+this algebra converts a BibTex tree into an Html representation, including
+ a list of hyperlinks at the top, maybe preamble blocks, and the table with the
+ entries. 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+separate\ ::\ {\char 91}BlockElem{\char 93}\ ->\ {\char 91}BlockElem{\char 93}
+\end{tabular}]\haddockbegindoc
+used to place a pipe character between the list of hyperlinks 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+generateIndex\ ::\ Reference\ ->\ {\char 91}BlockElem{\char 93}
+\end{tabular}]\haddockbegindoc
+turns a reference into a hyperlink 
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+generateTableRows\ ::\ EntryType\ ->\ Reference\ ->\ {\char 91}Field{\char 93}\ ->\ Tr
+\end{tabular}]\haddockbegindoc
+turns an Entry (or more accurately, given a type, a name, and a list of attributes) into
+ a table row
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+flattenEntry\ ::\ EntryType\ ->\ {\char 91}Field{\char 93}\ ->\ String
+\end{tabular}]\haddockbegindoc
+given a type and a list of attributes, flattens an entry into a string, for placement
+ in a table cell
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+formatFields\ ::\ Field\ ->\ String
+\end{tabular}]\haddockbegindoc
+format a field into a string. Possibly do special formatting things, depending on 
+ if it's a title, for example. 
+\par
+
+\end{haddockdesc}

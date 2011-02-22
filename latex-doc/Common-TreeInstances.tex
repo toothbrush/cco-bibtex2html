@@ -1,0 +1,129 @@
+\haddockmoduleheading{Common.TreeInstances}
+\label{module:Common.TreeInstances}
+\haddockbeginheader
+{\haddockverb\begin{verbatim}
+module Common.TreeInstances (
+    bibfromTree,  bibtoTree,  entryfromTree,  entrytoTree,  fieldfromTree, 
+    fieldtoTree,  htmlfromTree,  htmltoTree,  headfromTree,  headtoTree, 
+    blockitemfromTree,  blockitemtoTree,  trfromTree,  trtoTree
+  ) where\end{verbatim}}
+\haddockendheader
+
+This module contains instances of Tree for various data structures. These are used 
+ for converting between ATerm and the given data structure. These functions aren't very 
+ complicated, they just allow \haddocktt{flattening} a datastructure into a portable format, and 
+ converting it back again.
+\par
+
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+bibfromTree\ ::\ BibTex\ ->\ ATerm
+\end{tabular}]\haddockbegindoc
+Converts from BibTex to ATerm
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+bibtoTree\ ::\ ATerm\ ->\ Feedback\ BibTex
+\end{tabular}]\haddockbegindoc
+Converts an ATerm back into a BibTex tree
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+entryfromTree\ ::\ Entry\ ->\ ATerm
+\end{tabular}]\haddockbegindoc
+Converts from bibtex Entry to ATerm
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+entrytoTree\ ::\ ATerm\ ->\ Feedback\ Entry
+\end{tabular}]\haddockbegindoc
+Converts an ATerm back into a BibTex entry
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+fieldfromTree\ ::\ Field\ ->\ ATerm
+\end{tabular}]\haddockbegindoc
+Converts from Field (key/value pair) to ATerm
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+fieldtoTree\ ::\ ATerm\ ->\ Feedback\ Field
+\end{tabular}]\haddockbegindoc
+Converts an ATerm back into a key/value pair
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+htmlfromTree\ ::\ Html\ ->\ ATerm
+\end{tabular}]\haddockbegindoc
+Converts from HTML document to ATerm
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+htmltoTree\ ::\ ATerm\ ->\ Feedback\ Html
+\end{tabular}]\haddockbegindoc
+Converts an ATerm back into an HTML document
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+headfromTree\ ::\ Head\ ->\ ATerm
+\end{tabular}]\haddockbegindoc
+Converts from HTML head element to ATerm
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+headtoTree\ ::\ ATerm\ ->\ Feedback\ Head
+\end{tabular}]\haddockbegindoc
+Converts an ATerm back into an html head element
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+blockitemfromTree\ ::\ BlockElem\ ->\ ATerm
+\end{tabular}]\haddockbegindoc
+Converts from HTML entity to ATerm
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+blockitemtoTree\ ::\ ATerm\ ->\ Feedback\ BlockElem
+\end{tabular}]\haddockbegindoc
+Converts an ATerm back into an html element
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+trfromTree\ ::\ Tr\ ->\ ATerm
+\end{tabular}]\haddockbegindoc
+Converts from HTML horizontal rule to ATerm
+\par
+
+\end{haddockdesc}
+\begin{haddockdesc}
+\item[\begin{tabular}{@{}l}
+trtoTree\ ::\ ATerm\ ->\ Feedback\ Tr
+\end{tabular}]\haddockbegindoc
+Converts an ATerm back into a horizontal rule (html element)
+\par
+
+\end{haddockdesc}
