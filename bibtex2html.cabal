@@ -7,13 +7,18 @@ Description:         This package contains 3 tools for converting BibTex files i
                      representation, also doing error-checking, and pp-html pretty-prints this HTML abstract
                      syntax tree.
 License:             GPL-3
+License-file:        LICENSE
+Category:            Typesetting
 Author:              Paul van der Walt (3120805)
 Maintainer:          p.d.vanderwalt@students.uu.nl
 Copyright:           2010 P. D. van der Walt
 Build-type:          Simple
-Cabal-version:       >=1.2
+Cabal-version:       >=1.4
 extra-source-files:  example.bib
--- data-files:          slides.pdf
+                     common/AllowedFields.hs
+                     parse-bib-src/Parser.hs
+                     parse-bib-src/ParserUtils.hs
+data-files:          README
 
 Library
     Exposed-modules: 
