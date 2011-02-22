@@ -17,9 +17,20 @@ module Main where
     main = ioWrap pipeline
 
     pipeline :: Component String String
-    pipeline =  bibTexparser  >>>   
+    pipeline =  removeComments >>>
+                bibTexparser  >>>   
                 bibTex2Aterm  >>>   
                 aTerm2String 
+
+    removeComments :: Component String String
+    removeComments = component $ (\inp -> do let splitfile = lines inp
+                                             let rawFile = map killComments splitfile
+                                             trace_ (show rawFile)
+                                             return $ unlines rawFile
+                                 )
+
+    killComments :: String -> String
+    killComments = takeWhile (/= '%')
 
     bibTexparser :: Component String BibTex
     bibTexparser = component $ parseFeedback parseBib
