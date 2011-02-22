@@ -8,6 +8,7 @@ module Main where
     import Common.TreeInstances
     import Common.ATermUtils
     import Control.Arrow
+    import Data.List (intersperse)
     
     main :: IO ()
     main = ioWrap pipeline
@@ -22,13 +23,6 @@ module Main where
                 aTerm2String
    
 
-    aTerm2BibTex :: Component ATerm BibTex
-    aTerm2BibTex = component (\inp -> do trace_ "Converting ATerm to BibTeX..."
-                                         toTree inp)
- 
-    html2Aterm :: Component Html ATerm
-    html2Aterm = component (\inp -> do trace_ "Converting HTML to ATerm..."
-                                       return $ fromTree inp)
   
     bibTex2HTML :: Component BibTex Html
     bibTex2HTML = component (\inp -> do trace_ "Converting BibTeX to HTML..."
@@ -38,21 +32,25 @@ module Main where
     bib2htmlAlg = (fBibTex,fEntry) where
         fBibTex entries       =  let tableEntries = (snd . unzip) entries
                                      arefs        = (concat . fst . unzip) entries
-                                 in  Html (Head "Bibliography") $ arefs ++  
-                                     [Hr, Table [(Field "border" "0")] tableEntries]
-        fEntry spec ref attr  =  (buildbegin ref, buildend spec ref attr)
+                                 in  Html (Head "Bibliography") $ 
+                                     (separate arefs) ++ [Hr, Table [(Field "border" "0")] tableEntries]
+        fEntry spec ref attr  =  (generateIndex ref, generateTableRows spec ref attr)
 
+    separate :: [BlockElem] -> [BlockElem]
+    separate = intersperse (P [] "|")
 
-    buildbegin :: Reference -> [BlockElem]
-    buildbegin ref =  [ A [(Field "href" ref)] ref
-                      , P []                   "|"
-                      ] 
+    generateIndex :: Reference -> [BlockElem]
+    generateIndex ref = [ A [Field "href" ('#':ref)] ref ]
 
-    buildend :: EntryType -> Reference -> [Field] -> Tr
-    buildend spec ref attr = Tr [(Field "valign" "top")] [A [(Field "name" ref)] ref, P [] (buildPara spec attr)]
+    generateTableRows :: EntryType -> Reference -> [Field] -> Tr
+    generateTableRows spec ref attr = Tr [Field "valign" "top"
+                                         ] 
+                                         [ A [Field "name" ref] ref
+                                         , P [] (flattenEntry spec attr)
+                                         ]
 
-    buildPara :: EntryType -> [Field] -> String
-    buildPara spec = foldr ((++) . formatFields) ""
+    flattenEntry :: EntryType -> [Field] -> String
+    flattenEntry spec = foldr ((++) . formatFields) ""
 
 
     formatFields :: Field -> String
