@@ -7,6 +7,7 @@ module Parser where
 
     import ParserUtils
     import Common.BibTypes
+    import Char (isDigit)
 
     parseBib = BibTex `pMerge` (pMany parseBibEntry)
 
@@ -16,17 +17,23 @@ module Parser where
                                    )
 
     pBibEntryBody :: Parser [Field]
-    pBibEntryBody = pList1Sep (pSym ',') (pKeyValue) <* pSym '}' <* spaces
+    pBibEntryBody = pList1Sep (pSym ',') pKeyValue <* spaces <* pSym '}' <* spaces
     
 
     pBibKey :: Parser String
     pBibKey  = pMunch (flip elem (['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9']))
-
-    pKeyValue :: Parser Field
-    pKeyValue = Field <$> (spaces *> pMunch1 (flip elem ['a'..'z'])) <* (spaces *> pSym '=' *> spaces *> pSym '"') <*> (pMunch (/= '"') <* pSym '"' ) --TODO: nongreedy munch?
 
     pReference = pSym '{' *> pBibKey <* pToken "," <* spaces
 
     pType :: Parser String
     pType = (pSym '@' *> pMunch1 (flip elem ['a'..'z']))
 
+    pKeyValue :: Parser Field
+    pKeyValue = Field <$> 
+                    (spaces *> pMunch1 (flip elem ['a'..'z'])) 
+                    <* 
+                    (spaces *> pSym '=' *> spaces) 
+                    <*> ((pSym '"' *> pMunch (/= '"') <* pSym '"' ) --TODO: nongreedy munch?
+                         <|>
+                         (pMunch isDigit)
+                        )

@@ -1,5 +1,7 @@
 module Common.AllowedFields where
     
+    -- from http://en.wikipedia.org/wiki/BibTeX
+
     allowedTable = [ keysArticle
                    , keysBook
                    , keysBooklet
